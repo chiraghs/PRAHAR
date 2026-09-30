@@ -32,7 +32,7 @@
     page-break-inside: avoid;
     position: relative;
     overflow: hidden;
-    padding: 70px 90px;
+    padding: 60px 80px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -44,7 +44,7 @@
   }
 
   .slide.dark-flow {
-    background: #0d1116;
+    background: #071523;
     color: #ffffff;
   }
 
@@ -57,7 +57,7 @@
     display: flex;
     align-items: center;
     gap: 18px;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
   }
 
   .accent-bar {
@@ -68,7 +68,7 @@
   }
 
   .slide-title {
-    font-size: 44px;
+    font-size: 42px;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: #0f172a;
@@ -79,7 +79,7 @@
   }
 
   .slide-category {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -693,30 +693,184 @@
   </div>
 
   <!-- ==========================================
-       SLIDE 11: END-TO-END DATA FLOW DIAGRAM (UPLOADED IMAGE)
+       SLIDE 11: NATIVE SYSTEM ARCHITECTURE BLOCK DIAGRAM
   =========================================== -->
-  <div class="slide dark-flow" style="padding: 50px 90px; justify-content: space-between;">
+  <div class="slide dark-flow">
     <div>
-      <div class="slide-header" style="margin-bottom: 20px;">
+      <div class="slide-header" style="margin-bottom: 18px;">
         <div class="accent-bar" style="background: #00d1b2;"></div>
         <div>
-          <div class="slide-category" style="color: #00d1b2;">Architectural Flowchart (README.md)</div>
-          <h2 class="slide-title">End-to-End System Data Flow Diagram</h2>
+          <div class="slide-category" style="color: #00d1b2;">System Architecture Specification (README.md)</div>
+          <h2 class="slide-title">End-to-End System Block Diagram & Microservice Topology</h2>
         </div>
       </div>
 
-      <!-- User's Uploaded Architecture Diagram -->
-      <div class="screenshot-frame" style="height: 660px; background: #0d1116; border: 1.5px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <img src="screenshots/system_architecture_diagram.png" alt="System Architecture Data Flow Diagram" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+      <!-- Native Crisp Vector Block Diagram Container -->
+      <div style="background: rgba(13, 27, 46, 0.95); border: 1.5px solid rgba(0, 131, 108, 0.35); border-radius: 22px; padding: 22px 28px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        
+        <!-- TIER 1: EXTERNAL FEEDS -->
+        <div style="background: rgba(15, 33, 60, 0.7); border: 1px solid rgba(147, 197, 253, 0.25); border-radius: 14px; padding: 12px 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 12px; font-weight: 800; color: #93c5fd; letter-spacing: 0.08em; text-transform: uppercase;">1. External Feeds & Satellite Telemetry</span>
+            <span style="font-size: 10px; background: rgba(59, 130, 246, 0.2); color: #93c5fd; padding: 2px 8px; border-radius: 9999px; font-weight: 700;">LIVE INGESTION</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <div style="background: #0b1c30; border: 1px solid #1e3a5f; border-radius: 10px; padding: 10px 14px;">
+              <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 3px;">🛰️ IMD / JTWC</div>
+              <div style="font-size: 11px; color: #94a3b8; line-height: 1.4;">Real-time cyclone track coordinates, wind, central pressure & radii</div>
+            </div>
+            <div style="background: #0b1c30; border: 1px solid #1e3a5f; border-radius: 10px; padding: 10px 14px;">
+              <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 3px;">🌐 Google Earth Engine</div>
+              <div style="font-size: 11px; color: #94a3b8; line-height: 1.4;">Copernicus 30m DEM elevation, Sentinel-1 SAR & GPM rain</div>
+            </div>
+            <div style="background: #0b1c30; border: 1px solid #1e3a5f; border-radius: 10px; padding: 10px 14px;">
+              <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 3px;">🗺️ OSM Overpass API</div>
+              <div style="font-size: 11px; color: #94a3b8; line-height: 1.4;">Critical facilities: Hospitals, Sub-stations, Bridges & Shelters</div>
+            </div>
+            <div style="background: #0b1c30; border: 1px solid #1e3a5f; border-radius: 10px; padding: 10px 14px;">
+              <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 3px;">🌊 INCOIS / NOAA</div>
+              <div style="font-size: 11px; color: #94a3b8; line-height: 1.4;">Coastal tide gauges, sea surface temps & bathymetric slopes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLOW CONNECTOR -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 8px; color: #00d1b2; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em;">
+          <span>▼ ASYNCHRONOUS INGESTION ENGINE (:8001)</span>
+        </div>
+
+        <!-- TIER 2 & 3: INGESTION MICROSERVICE & STORAGE -->
+        <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px;">
+          
+          <!-- Ingestion Microservice -->
+          <div style="background: rgba(15, 33, 60, 0.7); border: 1px solid rgba(0, 131, 108, 0.35); border-radius: 14px; padding: 12px 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 800; color: #00d1b2; letter-spacing: 0.08em; text-transform: uppercase;">2. Data Ingestion Microservice (services/ingestion)</span>
+              <span style="font-size: 10px; background: rgba(0,131,108,0.25); color: #00d1b2; padding: 2px 7px; border-radius: 4px; font-weight: 700;">PORT 8001</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div style="background: #092026; border: 1px solid #005a4a; border-radius: 8px; padding: 8px 12px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">⚡ Async Ingestion Worker</div>
+                <div style="font-size: 10.5px; color: #a7f3d0;">Non-blocking background poller</div>
+              </div>
+              <div style="background: #092026; border: 1px solid #005a4a; border-radius: 8px; padding: 8px 12px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">🌀 Track Normalizer</div>
+                <div style="font-size: 10.5px; color: #a7f3d0;">Cone of uncertainty generator</div>
+              </div>
+              <div style="background: #092026; border: 1px solid #005a4a; border-radius: 8px; padding: 8px 12px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">🏔️ Raster Pipeline</div>
+                <div style="font-size: 10.5px; color: #a7f3d0;">GEE elevation & bathymetry sampler</div>
+              </div>
+              <div style="background: #092026; border: 1px solid #005a4a; border-radius: 8px; padding: 8px 12px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: #ffffff;">🏗️ Infrastructure Extractor</div>
+                <div style="font-size: 10.5px; color: #a7f3d0;">OSM Overpass spatial feature parser</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Storage & Caching -->
+          <div style="background: rgba(15, 33, 60, 0.7); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 14px; padding: 12px 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 12px; font-weight: 800; color: #c4b5fd; letter-spacing: 0.08em; text-transform: uppercase;">3. Storage & Geo-Caching Tier</span>
+              <span style="font-size: 10px; background: rgba(124, 58, 237, 0.2); color: #c4b5fd; padding: 2px 7px; border-radius: 4px; font-weight: 700;">PERSISTENCE</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <div style="background: #1e1b4b; border: 1px solid #4338ca; border-radius: 8px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 12px; font-weight: 700; color: #ffffff;">🐘 PostgreSQL / PostGIS</div>
+                <div style="font-size: 10.5px; color: #c4b5fd;">Spatial DB & Geometry Indexing</div>
+              </div>
+              <div style="background: #1e1b4b; border: 1px solid #4338ca; border-radius: 8px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 12px; font-weight: 700; color: #ffffff;">⚡ Redis Geo-Cache & Pub/Sub</div>
+                <div style="font-size: 10.5px; color: #c4b5fd;">Sub-second Live Stream Cache</div>
+              </div>
+              <div style="background: #1e1b4b; border: 1px solid #4338ca; border-radius: 8px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 12px; font-weight: 700; color: #ffffff;">🗺️ GeoJSON & Raster Store</div>
+                <div style="font-size: 10.5px; color: #c4b5fd;">Inundation Contour Vectors</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- FLOW CONNECTOR -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 8px; color: #f58220; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em;">
+          <span>▼ CORE PREDICTIVE SIMULATION & GEMINI AI ENGINE (:8010)</span>
+        </div>
+
+        <!-- TIER 4: CORE API & SIMULATION ENGINE -->
+        <div style="background: rgba(15, 33, 60, 0.7); border: 1px solid rgba(245, 130, 32, 0.35); border-radius: 14px; padding: 12px 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 12px; font-weight: 800; color: #f58220; letter-spacing: 0.08em; text-transform: uppercase;">4. Core API & Simulation Engine (backend FastAPI)</span>
+            <span style="font-size: 10px; background: rgba(245, 130, 32, 0.2); color: #f58220; padding: 2px 7px; border-radius: 4px; font-weight: 700;">PORT 8010</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+            <div style="background: #2a1b0a; border: 1px solid #7c2d12; border-radius: 8px; padding: 9px 12px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 2px;">🌊 SLOSH Model</div>
+              <div style="font-size: 10px; color: #fed7aa; line-height: 1.4;">Hydrodynamic storm surge inundation & bathymetric slopes</div>
+            </div>
+            <div style="background: #2a1b0a; border: 1px solid #7c2d12; border-radius: 8px; padding: 9px 12px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 2px;">💧 Compound Flood</div>
+              <div style="font-size: 10px; color: #fed7aa; line-height: 1.4;">Estuary backwater & compound river-surge runoff engine</div>
+            </div>
+            <div style="background: #2a1b0a; border: 1px solid #7c2d12; border-radius: 8px; padding: 9px 12px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 2px;">🕸️ NetworkX Graph</div>
+              <div style="font-size: 10px; color: #fed7aa; line-height: 1.4;">Dynamic road severance & hospital isolation index solver</div>
+            </div>
+            <div style="background: #2a1b0a; border: 1px solid #7c2d12; border-radius: 8px; padding: 9px 12px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 2px;">💳 Parametric Escrow</div>
+              <div style="font-size: 10px; color: #fed7aa; line-height: 1.4;">Automated T-24h smart trigger & cryptographic block ledger</div>
+            </div>
+            <div style="background: #2a1b0a; border: 1px solid #7c2d12; border-radius: 8px; padding: 9px 12px;">
+              <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 2px;">🧠 Gemini Flash AI</div>
+              <div style="font-size: 10px; color: #fed7aa; line-height: 1.4;">Multimodal spatial reasoning & 22 Indic language SOP synthesis</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLOW CONNECTOR -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 8px; color: #00d1b2; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em;">
+          <span>▼ DYNAMIC PRESENTATION LAYER (:5174)</span>
+        </div>
+
+        <!-- TIER 5: PRESENTATION LAYER -->
+        <div style="background: rgba(15, 33, 60, 0.7); border: 1px solid rgba(0, 209, 178, 0.35); border-radius: 14px; padding: 12px 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 12px; font-weight: 800; color: #00d1b2; letter-spacing: 0.08em; text-transform: uppercase;">5. Presentation Layer (frontend React 18 + TS + Vite)</span>
+            <span style="font-size: 10px; background: rgba(0, 209, 178, 0.2); color: #00d1b2; padding: 2px 7px; border-radius: 4px; font-weight: 700;">PORT 5174</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+            <div style="background: #042f2e; border: 1px solid #115e59; border-radius: 8px; padding: 8px 12px;">
+              <div style="font-size: 12px; font-weight: 800; color: #ffffff;">🏛️ War Room Console</div>
+              <div style="font-size: 10px; color: #99f6e4;">National & State ops command</div>
+            </div>
+            <div style="background: #042f2e; border: 1px solid #115e59; border-radius: 8px; padding: 8px 12px;">
+              <div style="font-size: 12px; font-weight: 800; color: #ffffff;">🗺️ Leaflet GIS 3D</div>
+              <div style="font-size: 10px; color: #99f6e4;">Inundation & severed lifelines</div>
+            </div>
+            <div style="background: #042f2e; border: 1px solid #115e59; border-radius: 8px; padding: 8px 12px;">
+              <div style="font-size: 12px; font-weight: 800; color: #ffffff;">⏱️ Temporal Scrubber</div>
+              <div style="font-size: 10px; color: #99f6e4;">T-72h to Landfall playhead</div>
+            </div>
+            <div style="background: #042f2e; border: 1px solid #115e59; border-radius: 8px; padding: 8px 12px;">
+              <div style="font-size: 12px; font-weight: 800; color: #ffffff;">📢 Indic Audio Drawer</div>
+              <div style="font-size: 10px; color: #99f6e4;">22 Official languages speech</div>
+            </div>
+            <div style="background: #042f2e; border: 1px solid #115e59; border-radius: 8px; padding: 8px 12px;">
+              <div style="font-size: 12px; font-weight: 800; color: #ffffff;">🪙 Parametric Terminal</div>
+              <div style="font-size: 10px; color: #99f6e4;">Pre-landfall liquidity release</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- Bottom Architectural Flow Callout Banner -->
-    <div style="background: rgba(22, 27, 34, 0.95); border: 1.5px solid #30363d; border-radius: 18px; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between;">
-      <div style="font-size: 14px; font-weight: 800; color: #00d1b2;">
+    <div style="background: rgba(22, 27, 34, 0.95); border: 1.5px solid #30363d; border-radius: 18px; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="font-size: 13.5px; font-weight: 800; color: #00d1b2;">
         ⚡ Decoupled Operational Flow:
       </div>
-      <div style="font-size: 13px; font-weight: 700; color: #e2e8f0; display: flex; gap: 10px; align-items: center;">
+      <div style="font-size: 12.5px; font-weight: 700; color: #e2e8f0; display: flex; gap: 10px; align-items: center;">
         <span>External Feeds & GEE</span>
         <span style="color: #00d1b2;">➔</span>
         <span>Async Ingestion (:8001)</span>

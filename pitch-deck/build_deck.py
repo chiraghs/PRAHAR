@@ -15,14 +15,16 @@ def create_pptx():
     
     # Colors
     DARK_BG = RGBColor(10, 25, 47)       # #0a192f
-    DARK_FLOW_BG = RGBColor(13, 17, 22)  # #0d1116
+    DARK_FLOW_BG = RGBColor(7, 21, 35)   # #071523
     DARK_CARD = RGBColor(15, 33, 60)     # #0f213c
     LIGHT_BG = RGBColor(248, 250, 252)   # #f8fafc
     WHITE = RGBColor(255, 255, 255)
     GREEN_ACCENT = RGBColor(0, 131, 108) # #00836c
     GREEN_SOFT = RGBColor(220, 245, 238)
+    TEAL_BRIGHT = RGBColor(0, 209, 178)  # #00d1b2
     ORANGE_ACCENT = RGBColor(245, 130, 32) # #f58220
     CRIMSON = RGBColor(208, 59, 59)      # #d03b3b
+    PURPLE_ACCENT = RGBColor(124, 58, 237) # #7c3aed
     INK_PRIMARY = RGBColor(15, 23, 42)
     INK_MUTED = RGBColor(100, 116, 139)
     BORDER_LIGHT = RGBColor(226, 232, 240)
@@ -36,18 +38,18 @@ def create_pptx():
         fill.fore_color.rgb = color
 
     def add_header(slide, title, category="ANTICIPATORY RESILIENCE", is_dark=False):
-        bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.5), Inches(0.08), Inches(0.45))
+        bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.4), Inches(0.08), Inches(0.45))
         bar.fill.solid()
-        bar.fill.fore_color.rgb = RGBColor(0, 209, 178) if is_dark else GREEN_ACCENT
+        bar.fill.fore_color.rgb = TEAL_BRIGHT if is_dark else GREEN_ACCENT
         bar.line.fill.background()
 
-        tx_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.45), Inches(11.5), Inches(0.55))
+        tx_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.35), Inches(11.5), Inches(0.55))
         tf = tx_box.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
         p = tf.paragraphs[0]
         p.text = title
-        p.font.size = Pt(24)
+        p.font.size = Pt(22)
         p.font.bold = True
         p.font.color.rgb = WHITE if is_dark else INK_PRIMARY
 
@@ -66,7 +68,7 @@ def create_pptx():
     p.text = "⚡ AI-POWERED CYCLONE RESILIENCE PLATFORM"
     p.font.size = Pt(11)
     p.font.bold = True
-    p.font.color.rgb = RGBColor(0, 209, 178)
+    p.font.color.rgb = TEAL_BRIGHT
     p.alignment = PP_ALIGN.CENTER
 
     t_box = s1.shapes.add_textbox(Inches(1.5), Inches(1.9), Inches(10.3), Inches(1.2))
@@ -619,28 +621,194 @@ def create_pptx():
     p.alignment = PP_ALIGN.CENTER
 
     # ==========================================
-    # SLIDE 11: END-TO-END ARCHITECTURE DIAGRAM (UPLOADED IMAGE)
+    # SLIDE 11: NATIVE SYSTEM ARCHITECTURE BLOCK DIAGRAM (MERMAID SPEC)
     # ==========================================
     s11 = prs.slides.add_slide(blank_slide_layout)
     set_slide_bg(s11, DARK_FLOW_BG)
-    add_header(s11, "End-to-End System Data Flow Diagram", "SYSTEM DATA FLOW (README SPECIFICATION)", is_dark=True)
+    add_header(s11, "End-to-End System Block Diagram", "MICROSERVICES & DATA FLOW TOPOLOGY (README.MD)", is_dark=True)
 
-    img_diag = os.path.join(screenshots_dir, "system_architecture_diagram.png")
-    if os.path.exists(img_diag):
-        s11.shapes.add_picture(img_diag, Inches(0.8), Inches(1.3), Inches(11.7), Inches(4.5))
+    # 1. External Feeds (Top Row)
+    t1_box = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.05), Inches(11.7), Inches(1.15))
+    t1_box.fill.solid()
+    t1_box.fill.fore_color.rgb = RGBColor(15, 33, 60)
+    t1_box.line.color.rgb = RGBColor(56, 189, 248)
 
-    # Bottom Flow Callout Box
-    diag_banner = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.9))
-    diag_banner.fill.solid()
-    diag_banner.fill.fore_color.rgb = RGBColor(22, 27, 34)
-    diag_banner.line.color.rgb = RGBColor(48, 54, 61)
-    tf = diag_banner.text_frame
-    tf.word_wrap = True
+    t1_lbl = s11.shapes.add_textbox(Inches(0.95), Inches(1.08), Inches(11.4), Inches(0.25))
+    t1_lbl.text_frame.paragraphs[0].text = "1. EXTERNAL FEEDS & SATELLITE TELEMETRY"
+    t1_lbl.text_frame.paragraphs[0].font.size = Pt(9.5)
+    t1_lbl.text_frame.paragraphs[0].font.bold = True
+    t1_lbl.text_frame.paragraphs[0].font.color.rgb = RGBColor(56, 189, 248)
+
+    f_items = [
+        ("🛰️ IMD / JTWC", "Cyclone track coordinates, wind & pressure"),
+        ("🌐 Google Earth Engine", "Copernicus 30m DEM, Sentinel-1 & GPM"),
+        ("🗺️ OSM Overpass", "Hospitals, Sub-stations, Bridges & Shelters"),
+        ("🌊 INCOIS / NOAA", "Coastal tide gauges, SST & bathymetry")
+    ]
+    f_w = Inches(2.7)
+    for i, (hd, sub) in enumerate(f_items):
+        bx = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0) + i * Inches(2.88), Inches(1.35), f_w, Inches(0.72))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(11, 28, 48)
+        bx.line.color.rgb = RGBColor(30, 58, 95)
+        tf = bx.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0.08)
+        tf.paragraphs[0].text = hd
+        tf.paragraphs[0].font.size = Pt(11)
+        tf.paragraphs[0].font.bold = True
+        tf.paragraphs[0].font.color.rgb = WHITE
+        p2 = tf.add_paragraph()
+        p2.text = sub
+        p2.font.size = Pt(8.5)
+        p2.font.color.rgb = RGBColor(148, 163, 184)
+
+    # 2. Ingestion Microservice & Storage (Middle Row)
+    ing_box = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(2.35), Inches(6.8), Inches(1.4))
+    ing_box.fill.solid()
+    ing_box.fill.fore_color.rgb = RGBColor(15, 33, 60)
+    ing_box.line.color.rgb = TEAL_BRIGHT
+    ing_lbl = s11.shapes.add_textbox(Inches(0.95), Inches(2.38), Inches(6.5), Inches(0.25))
+    ing_lbl.text_frame.paragraphs[0].text = "2. DATA INGESTION MICROSERVICE (services/ingestion :8001)"
+    ing_lbl.text_frame.paragraphs[0].font.size = Pt(9.5)
+    ing_lbl.text_frame.paragraphs[0].font.bold = True
+    ing_lbl.text_frame.paragraphs[0].font.color.rgb = TEAL_BRIGHT
+
+    ing_mods = [
+        ("⚡ Async Worker", "Non-blocking poller daemon"),
+        ("🌀 Track Normalizer", "Cone generator"),
+        ("🏔️ Raster Pipeline", "GEE DEM sampler"),
+        ("🏗️ OSM Extractor", "Spatial lifelines parser")
+    ]
+    for i, (hd, sub) in enumerate(ing_mods):
+        row = i // 2
+        col = i % 2
+        bx = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0) + col * Inches(3.25), Inches(2.65) + row * Inches(0.48), Inches(3.15), Inches(0.42))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(9, 32, 38)
+        bx.line.color.rgb = RGBColor(0, 90, 74)
+        tf = bx.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0.04)
+        p = tf.paragraphs[0]
+        p.text = f"{hd} : {sub}"
+        p.font.size = Pt(9)
+        p.font.bold = True
+        p.font.color.rgb = RGBColor(167, 243, 208)
+
+    # 3. Storage & Caching
+    stor_box = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.8), Inches(2.35), Inches(4.7), Inches(1.4))
+    stor_box.fill.solid()
+    stor_box.fill.fore_color.rgb = RGBColor(15, 33, 60)
+    stor_box.line.color.rgb = PURPLE_ACCENT
+    stor_lbl = s11.shapes.add_textbox(Inches(7.95), Inches(2.38), Inches(4.4), Inches(0.25))
+    stor_lbl.text_frame.paragraphs[0].text = "3. STORAGE & GEO-CACHING TIER"
+    stor_lbl.text_frame.paragraphs[0].font.size = Pt(9.5)
+    stor_lbl.text_frame.paragraphs[0].font.bold = True
+    stor_lbl.text_frame.paragraphs[0].font.color.rgb = RGBColor(196, 181, 253)
+
+    stor_mods = [
+        ("🐘 PostgreSQL / PostGIS", "Spatial DB & Vector Geometries"),
+        ("⚡ Redis Geo-Cache & Pub/Sub", "Real-time Telemetry Stream Cache"),
+        ("🗺️ GeoTIFF & GeoJSON Store", "Inundation Polygons & Elevation Grids")
+    ]
+    for i, (hd, sub) in enumerate(stor_mods):
+        bx = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.95), Inches(2.65) + i * Inches(0.33), Inches(4.4), Inches(0.28))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(30, 27, 75)
+        bx.line.color.rgb = RGBColor(67, 56, 202)
+        tf = bx.text_frame
+        tf.margin_top = Inches(0.02)
+        p = tf.paragraphs[0]
+        p.text = f"{hd} — {sub}"
+        p.font.size = Pt(8.5)
+        p.font.bold = True
+        p.font.color.rgb = RGBColor(224, 231, 255)
+
+    # 4. Core API & Simulation Engine (:8010)
+    core_box = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(3.9), Inches(11.7), Inches(1.3))
+    core_box.fill.solid()
+    core_box.fill.fore_color.rgb = RGBColor(15, 33, 60)
+    core_box.line.color.rgb = ORANGE_ACCENT
+    core_lbl = s11.shapes.add_textbox(Inches(0.95), Inches(3.95), Inches(11.4), Inches(0.25))
+    core_lbl.text_frame.paragraphs[0].text = "4. CORE API & SIMULATION ENGINE (backend FastAPI :8010)"
+    core_lbl.text_frame.paragraphs[0].font.size = Pt(9.5)
+    core_lbl.text_frame.paragraphs[0].font.bold = True
+    core_lbl.text_frame.paragraphs[0].font.color.rgb = ORANGE_ACCENT
+
+    core_mods = [
+        ("🌊 SLOSH Surge Model", "Hydrodynamic surge & bathymetry"),
+        ("💧 Compound Flood", "River backflow & compound runoff"),
+        ("🕸️ NetworkX Graph", "Dynamic road severance & isolation"),
+        ("💳 Parametric Escrow", "T-24h smart contract escrow trigger"),
+        ("🧠 Gemini Flash AI", "Multimodal reasoning & 22 Indic SOPs")
+    ]
+    c_w = Inches(2.18)
+    for i, (hd, sub) in enumerate(core_mods):
+        bx = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0) + i * Inches(2.28), Inches(4.25), c_w, Inches(0.8))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(42, 27, 10)
+        bx.line.color.rgb = RGBColor(124, 45, 18)
+        tf = bx.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0.06)
+        p = tf.paragraphs[0]
+        p.text = hd
+        p.font.size = Pt(10.5)
+        p.font.bold = True
+        p.font.color.rgb = WHITE
+        p2 = tf.add_paragraph()
+        p2.text = sub
+        p2.font.size = Pt(8.5)
+        p2.font.color.rgb = RGBColor(254, 215, 170)
+
+    # 5. Presentation Layer (:5174)
+    pres_box = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.35), Inches(11.7), Inches(1.2))
+    pres_box.fill.solid()
+    pres_box.fill.fore_color.rgb = RGBColor(15, 33, 60)
+    pres_box.line.color.rgb = TEAL_BRIGHT
+    pres_lbl = s11.shapes.add_textbox(Inches(0.95), Inches(5.4), Inches(11.4), Inches(0.25))
+    pres_lbl.text_frame.paragraphs[0].text = "5. PRESENTATION LAYER (frontend React 18 + TypeScript + Vite :5174)"
+    pres_lbl.text_frame.paragraphs[0].font.size = Pt(9.5)
+    pres_lbl.text_frame.paragraphs[0].font.bold = True
+    pres_lbl.text_frame.paragraphs[0].font.color.rgb = TEAL_BRIGHT
+
+    pres_mods = [
+        ("🏛️ War Room Console", "National & State ops command"),
+        ("🗺️ Leaflet GIS 3D", "Inundation & severed lifelines"),
+        ("⏱️ Temporal Scrubber", "T-72h to Landfall playhead"),
+        ("📢 Indic Audio Drawer", "22 Official languages speech"),
+        ("🪙 Parametric Terminal", "Pre-landfall liquidity release")
+    ]
+    for i, (hd, sub) in enumerate(pres_mods):
+        bx = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0) + i * Inches(2.28), Inches(5.7), c_w, Inches(0.72))
+        bx.fill.solid()
+        bx.fill.fore_color.rgb = RGBColor(4, 47, 46)
+        bx.line.color.rgb = RGBColor(17, 94, 89)
+        tf = bx.text_frame
+        tf.word_wrap = True
+        tf.margin_top = Inches(0.06)
+        p = tf.paragraphs[0]
+        p.text = hd
+        p.font.size = Pt(10)
+        p.font.bold = True
+        p.font.color.rgb = WHITE
+        p2 = tf.add_paragraph()
+        p2.text = sub
+        p2.font.size = Pt(8.5)
+        p2.font.color.rgb = RGBColor(153, 246, 228)
+
+    # Bottom Flow Status Banner
+    b_stat = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(6.65), Inches(11.7), Inches(0.55))
+    b_stat.fill.solid()
+    b_stat.fill.fore_color.rgb = RGBColor(22, 27, 34)
+    b_stat.line.color.rgb = RGBColor(48, 54, 61)
+    tf = b_stat.text_frame
     p = tf.paragraphs[0]
-    p.text = "⚡ Architectural Flow: External Feeds & GEE ➔ Async Ingestion Engine (:8001) ➔ PostGIS / Redis ➔ FastAPI Engine (:8010) ➔ SLOSH / NetworkX / Gemini Flash ➔ War Room & 22 Indic Audio (:5174)"
-    p.font.size = Pt(11.5)
+    p.text = "⚡ Real-Time Pipeline: Feeds & GEE ➔ Ingestion (:8001) ➔ PostGIS / Redis ➔ FastAPI Engine (:8010) ➔ SLOSH & Gemini Flash ➔ War Room (:5174)"
+    p.font.size = Pt(11)
     p.font.bold = True
-    p.font.color.rgb = RGBColor(0, 209, 178)
+    p.font.color.rgb = TEAL_BRIGHT
     p.alignment = PP_ALIGN.CENTER
 
     out_pptx = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/PRAHAR-Pitch-Deck.pptx"
