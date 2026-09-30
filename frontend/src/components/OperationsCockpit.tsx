@@ -27,7 +27,7 @@ interface OperationsCockpitProps {
   onTimeStepChange: (step: string) => void;
 }
 
-type BasemapStyle = 'carto-dark' | 'google-hybrid' | 'esri-satellite' | 'carto-voyager';
+type BasemapStyle = 'satellite' | 'streets' | 'google-hybrid';
 
 const createSvgIcon = (color: string, label: string) => {
   return L.divIcon({
@@ -62,8 +62,8 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activeStormId, setActiveStormId] = useState<'dana' | 'amphan' | 'fani'>('dana');
   
-  // Basemap Selector (supports env var or user preference)
-  const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'carto-dark';
+  // Basemap Selector: Default is High-Res Satellite View
+  const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'satellite';
   const [basemap, setBasemap] = useState<BasemapStyle>(defaultBasemap);
   const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -94,7 +94,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
     [20.90, 86.40], [21.15, 86.70], [20.95, 87.05], [20.70, 86.75]
   ];
 
-  // Basemap Tile Layer URLs - Standard URLs without {r}
+  // Basemap Tile Layer URLs - High-Resolution Satellite & Open Topography
   const getBasemapConfig = () => {
     switch (basemap) {
       case 'google-hybrid':
@@ -102,27 +102,18 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           url: googleApiKey 
             ? `https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&key=${googleApiKey}`
             : 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-          attribution: '&copy; Google Maps Platform',
-          subdomains: 'abc'
+          attribution: '&copy; Google Maps Platform'
         };
-      case 'esri-satellite':
+      case 'streets':
         return {
-          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          attribution: '&copy; Esri World Imagery (Satellite)',
-          subdomains: 'abc'
+          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          attribution: '&copy; OpenStreetMap contributors'
         };
-      case 'carto-voyager':
-        return {
-          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-          attribution: '&copy; CARTO &copy; OpenStreetMap',
-          subdomains: 'abcd'
-        };
-      case 'carto-dark':
+      case 'satellite':
       default:
         return {
-          url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-          attribution: '&copy; CARTO Dark Matter &copy; OpenStreetMap',
-          subdomains: 'abcd'
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          attribution: '&copy; High-Resolution Satellite Telemetry &bull; Earth Observation'
         };
     }
   };
@@ -257,10 +248,9 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           {/* Basemap Switcher (Interactive) */}
           <div className="glass" style={{ padding: '3px 4px', borderRadius: 10, display: 'flex', gap: '4px', pointerEvents: 'auto', background: 'var(--surface-1)' }}>
             {[
-              { id: 'carto-dark', label: '🌑 CARTO Dark' },
-              { id: 'esri-satellite', label: '🌍 Satellite' },
-              { id: 'carto-voyager', label: '🗺️ Streets' },
-              { id: 'google-hybrid', label: '🛰️ Google' }
+              { id: 'satellite', label: '🛰️ Satellite View (Live)' },
+              { id: 'streets', label: '🗺️ Topo / Streets' },
+              { id: 'google-hybrid', label: '🛰️ Google Hybrid' }
             ].map(item => (
               <button
                 key={item.id}
@@ -312,7 +302,6 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
               key={basemap}
               attribution={basemapConfig.attribution}
               url={basemapConfig.url}
-              subdomains={basemapConfig.subdomains}
               maxZoom={19}
             />
 
