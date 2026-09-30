@@ -15,6 +15,7 @@ def create_pptx():
     
     # Colors
     DARK_BG = RGBColor(10, 25, 47)       # #0a192f
+    DARK_FLOW_BG = RGBColor(13, 17, 22)  # #0d1116
     DARK_CARD = RGBColor(15, 33, 60)     # #0f213c
     LIGHT_BG = RGBColor(248, 250, 252)   # #f8fafc
     WHITE = RGBColor(255, 255, 255)
@@ -34,10 +35,10 @@ def create_pptx():
         fill.solid()
         fill.fore_color.rgb = color
 
-    def add_header(slide, title, category="ANTICIPATORY RESILIENCE"):
+    def add_header(slide, title, category="ANTICIPATORY RESILIENCE", is_dark=False):
         bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.5), Inches(0.08), Inches(0.45))
         bar.fill.solid()
-        bar.fill.fore_color.rgb = GREEN_ACCENT
+        bar.fill.fore_color.rgb = RGBColor(0, 209, 178) if is_dark else GREEN_ACCENT
         bar.line.fill.background()
 
         tx_box = slide.shapes.add_textbox(Inches(1.0), Inches(0.45), Inches(11.5), Inches(0.55))
@@ -48,7 +49,7 @@ def create_pptx():
         p.text = title
         p.font.size = Pt(24)
         p.font.bold = True
-        p.font.color.rgb = INK_PRIMARY
+        p.font.color.rgb = WHITE if is_dark else INK_PRIMARY
 
     # ==========================================
     # SLIDE 1: COVER SLIDE (Dark Navy)
@@ -539,9 +540,8 @@ def create_pptx():
     # ==========================================
     s10 = prs.slides.add_slide(blank_slide_layout)
     set_slide_bg(s10, LIGHT_BG)
-    add_header(s10, "System Architecture", "FROM SYSTEM README SPECIFICATION")
+    add_header(s10, "System Architecture & Decoupled Pipelines", "FROM SYSTEM README SPECIFICATION")
 
-    # 4 Tier Cards representing the README flowchart
     tiers = [
         ("1. External Feeds & Telemetry", [
             "• IMD / JTWC: Real-time cyclone tracks & cones",
@@ -606,7 +606,6 @@ def create_pptx():
             p2.font.color.rgb = INK_MUTED
             p2.space_after = Pt(6)
 
-    # Bottom Pipeline Summary Banner
     pb = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.8))
     pb.fill.solid()
     pb.fill.fore_color.rgb = RGBColor(241, 245, 249)
@@ -617,6 +616,31 @@ def create_pptx():
     p.font.size = Pt(12)
     p.font.bold = True
     p.font.color.rgb = GREEN_ACCENT
+    p.alignment = PP_ALIGN.CENTER
+
+    # ==========================================
+    # SLIDE 11: END-TO-END ARCHITECTURE DIAGRAM (UPLOADED IMAGE)
+    # ==========================================
+    s11 = prs.slides.add_slide(blank_slide_layout)
+    set_slide_bg(s11, DARK_FLOW_BG)
+    add_header(s11, "End-to-End System Data Flow Diagram", "SYSTEM DATA FLOW (README SPECIFICATION)", is_dark=True)
+
+    img_diag = os.path.join(screenshots_dir, "system_architecture_diagram.png")
+    if os.path.exists(img_diag):
+        s11.shapes.add_picture(img_diag, Inches(0.8), Inches(1.3), Inches(11.7), Inches(4.5))
+
+    # Bottom Flow Callout Box
+    diag_banner = s11.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.9))
+    diag_banner.fill.solid()
+    diag_banner.fill.fore_color.rgb = RGBColor(22, 27, 34)
+    diag_banner.line.color.rgb = RGBColor(48, 54, 61)
+    tf = diag_banner.text_frame
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    p.text = "⚡ Architectural Flow: External Feeds & GEE ➔ Async Ingestion Engine (:8001) ➔ PostGIS / Redis ➔ FastAPI Engine (:8010) ➔ SLOSH / NetworkX / Gemini Flash ➔ War Room & 22 Indic Audio (:5174)"
+    p.font.size = Pt(11.5)
+    p.font.bold = True
+    p.font.color.rgb = RGBColor(0, 209, 178)
     p.alignment = PP_ALIGN.CENTER
 
     out_pptx = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/PRAHAR-Pitch-Deck.pptx"

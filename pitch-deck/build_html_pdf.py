@@ -46,6 +46,11 @@ html_content = """<!DOCTYPE html>
     color: #ffffff;
   }
 
+  .slide.dark-flow {
+    background: #0d1116;
+    color: #ffffff;
+  }
+
   .slide.light {
     background: #f8fafc;
     color: #0f172a;
@@ -72,7 +77,7 @@ html_content = """<!DOCTYPE html>
     color: #0f172a;
   }
 
-  .slide.dark .slide-title {
+  .slide.dark .slide-title, .slide.dark-flow .slide-title {
     color: #ffffff;
   }
 
@@ -616,10 +621,8 @@ html_content = """<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 4 Core Columns / Tiers matching README -->
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 25px;">
         
-        <!-- Tier 1 -->
         <div class="card" style="padding: 28px 24px; border-top: 5px solid #1e3a5f;">
           <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #1e3a5f; margin-bottom: 8px;">Tier 1: Telemetry</div>
           <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">External Feeds</h3>
@@ -631,7 +634,6 @@ html_content = """<!DOCTYPE html>
           </ul>
         </div>
 
-        <!-- Tier 2 -->
         <div class="card" style="padding: 28px 24px; border-top: 5px solid #00836c;">
           <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #00836c; margin-bottom: 8px;">Tier 2: Ingestion (:8001)</div>
           <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">Ingestion Microservice</h3>
@@ -643,7 +645,6 @@ html_content = """<!DOCTYPE html>
           </ul>
         </div>
 
-        <!-- Tier 3 -->
         <div class="card" style="padding: 28px 24px; border-top: 5px solid #f58220;">
           <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #f58220; margin-bottom: 8px;">Tier 3: Core Simulation (:8010)</div>
           <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">FastAPI Core Engine</h3>
@@ -655,7 +656,6 @@ html_content = """<!DOCTYPE html>
           </ul>
         </div>
 
-        <!-- Tier 4 -->
         <div class="card" style="padding: 28px 24px; border-top: 5px solid #d03b3b;">
           <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #d03b3b; margin-bottom: 8px;">Tier 4: Presentation (:5174)</div>
           <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">React 18 + TS + Vite</h3>
@@ -669,7 +669,6 @@ html_content = """<!DOCTYPE html>
 
       </div>
 
-      <!-- Bottom Pipeline Flow Banner (Direct from README flowchart) -->
       <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 22px 30px; display: flex; align-items: center; justify-content: space-between;">
         <div style="font-size: 15px; font-weight: 800; color: #00836c;">
           ⚡ Full Data Flow:
@@ -685,7 +684,7 @@ html_content = """<!DOCTYPE html>
           <span style="color: #00836c;">➔</span>
           <span>Gemini AI SOPs</span>
           <span style="color: #00836c;">➔</span>
-          <span style="color: #00836c;">War Room UI (:5174)</span>
+          <span>War Room UI (:5174)</span>
         </div>
       </div>
     </div>
@@ -693,6 +692,46 @@ html_content = """<!DOCTYPE html>
     <div style="font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between;">
       <span>Architecture Specification from README.md</span>
       <span>Deployable with ./setup.sh & Docker Compose</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 11: END-TO-END DATA FLOW DIAGRAM (UPLOADED IMAGE)
+  =========================================== -->
+  <div class="slide dark-flow" style="padding: 50px 90px; justify-content: space-between;">
+    <div>
+      <div class="slide-header" style="margin-bottom: 20px;">
+        <div class="accent-bar" style="background: #00d1b2;"></div>
+        <div>
+          <div class="slide-category" style="color: #00d1b2;">Architectural Flowchart (README.md)</div>
+          <h2 class="slide-title">End-to-End System Data Flow Diagram</h2>
+        </div>
+      </div>
+
+      <!-- User's Uploaded Architecture Diagram -->
+      <div class="screenshot-frame" style="height: 660px; background: #0d1116; border: 1.5px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <img src="screenshots/system_architecture_diagram.png" alt="System Architecture Data Flow Diagram" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+      </div>
+    </div>
+
+    <!-- Bottom Architectural Flow Callout Banner -->
+    <div style="background: rgba(22, 27, 34, 0.95); border: 1.5px solid #30363d; border-radius: 18px; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="font-size: 14px; font-weight: 800; color: #00d1b2;">
+        ⚡ Decoupled Operational Flow:
+      </div>
+      <div style="font-size: 13px; font-weight: 700; color: #e2e8f0; display: flex; gap: 10px; align-items: center;">
+        <span>External Feeds & GEE</span>
+        <span style="color: #00d1b2;">➔</span>
+        <span>Async Ingestion (:8001)</span>
+        <span style="color: #00d1b2;">➔</span>
+        <span>PostGIS / Redis Cache</span>
+        <span style="color: #00d1b2;">➔</span>
+        <span>FastAPI Engine (:8010)</span>
+        <span style="color: #00d1b2;">➔</span>
+        <span>SLOSH & Gemini Flash</span>
+        <span style="color: #00d1b2;">➔</span>
+        <span>Presentation Console (:5174)</span>
+      </div>
     </div>
   </div>
 
