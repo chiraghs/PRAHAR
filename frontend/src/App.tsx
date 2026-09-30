@@ -9,7 +9,7 @@ import { Compass, Building2, Coins, Server } from 'lucide-react';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [language, setLanguage] = useState<'en' | 'or' | 'bn'>('en');
+  const [language, setLanguage] = useState<string>('or');
   const [activeTab, setActiveTab] = useState<'cockpit' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
   const [currentTimeStep, setCurrentTimeStep] = useState<string>('T-24h');
 
@@ -33,7 +33,7 @@ export default function App() {
       <Header 
         theme={theme}
         onToggleTheme={toggleTheme}
-        language={language}
+        selectedLanguage={language}
         onLanguageChange={setLanguage}
         activeRiskCount={3}
       />
@@ -92,7 +92,7 @@ export default function App() {
         <div style={{ flex: 1 }}>
           {activeTab === 'cockpit' && (
             <OperationsCockpit 
-              language={language}
+              selectedLanguage={language}
               currentTimeStep={currentTimeStep}
               onTimeStepChange={setCurrentTimeStep}
             />
@@ -115,7 +115,7 @@ export default function App() {
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--hairline)', padding: '14px 24px', background: 'var(--surface-1)', fontSize: '0.72rem', color: 'var(--ink-muted)', textAlign: 'center' }}>
-        PRAHAR (Predictive Risk & Anticipatory Hazard Action Resource) • Designed for Coastal Bay of Bengal Resilience • Ingestion Service on Port 8001 • Core Engine on Port 8010
+        PRAHAR (Predictive Risk & Anticipatory Hazard Action Resource) • Supporting all 22 Official Indian Languages (Eighth Schedule) • Ingestion Service on Port 8001 • Core Engine on Port 8010
       </footer>
 
     </div>

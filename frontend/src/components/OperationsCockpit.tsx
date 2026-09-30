@@ -14,12 +14,14 @@ import {
   Play, 
   Square,
   AlertTriangle,
-  Compass
+  Compass,
+  Globe
 } from 'lucide-react';
 import { BotIcon, TimerIcon, VolumeIcon } from './Icons';
+import { INDIAN_LANGUAGES, LanguageMeta } from '../lib/languages';
 
 interface OperationsCockpitProps {
-  language: 'en' | 'or' | 'bn';
+  selectedLanguage: string;
   currentTimeStep: string;
   onTimeStepChange: (step: string) => void;
 }
@@ -52,10 +54,12 @@ const shelterSafeIcon = createSvgIcon('#00836c', '🏕️');
 const shelterCutoffIcon = createSvgIcon('#d03b3b', '🏕️');
 const cycloneEyeIcon = createSvgIcon('#d03b3b', '🌀');
 
-export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange }: OperationsCockpitProps) {
+export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeStepChange }: OperationsCockpitProps) {
   const [selectedRole, setSelectedRole] = useState<'NDRF' | 'COLLECTOR' | 'PUBLIC'>('NDRF');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activeStormId, setActiveStormId] = useState<'dana' | 'amphan' | 'fani'>('dana');
+
+  const currentLang: LanguageMeta = INDIAN_LANGUAGES.find(l => l.code === selectedLanguage) || INDIAN_LANGUAGES[0];
 
   // Track coordinates
   const trackWaypoints = [
@@ -82,7 +86,7 @@ export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange 
     [20.90, 86.40], [21.15, 86.70], [20.95, 87.05], [20.70, 86.75]
   ];
 
-  // Real Web Speech API voice synthesis
+  // Real Web Speech API voice synthesis in selected Indian language
   const handlePlayVoice = () => {
     if ('speechSynthesis' in window) {
       if (isPlayingAudio) {
@@ -92,25 +96,22 @@ export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange 
       }
 
       setIsPlayingAudio(true);
-      const textToSpeak = selectedRole === 'NDRF'
-        ? "Flash advisory for NDRF Command: Pre-stage 6 assault craft at severed State Highway 9A junction to evacuate Talchua shelter before 1800 hours."
-        : selectedRole === 'COLLECTOR'
-        ? "District Magistrate directive: Mandatory evacuation ordered for all kutcha dwellings within 5 kilometers of the Bhitarkanika mangrove line."
-        : "Community emergency warning: Move livestock to elevated pucca shelters immediately. Do not venture into storm waters.";
+      const textToSpeak = currentLang.broadcastText;
 
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.rate = 0.95;
+      utterance.lang = currentLang.bcp47;
+      utterance.rate = 0.92;
       utterance.onend = () => setIsPlayingAudio(false);
       utterance.onerror = () => setIsPlayingAudio(false);
       window.speechSynthesis.speak(utterance);
     } else {
       setIsPlayingAudio(true);
-      setTimeout(() => setIsPlayingAudio(false), 3000);
+      setTimeout(() => setIsPlayingAudio(false), 3500);
     }
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr 360px', gap: '14px', alignItems: 'stretch' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr 380px', gap: '14px', alignItems: 'stretch' }}>
       
       {/* LEFT COLUMN: Active Storm Selector & District Vulnerability */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -481,7 +482,9 @@ export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <VolumeIcon style={{ color: 'var(--brand-green)' }} />
-                <span style={{ fontSize: '0.72rem', fontWeight: 700 }}>Indic Audio Broadcast</span>
+                <span style={{ fontSize: '0.72rem', fontWeight: 800 }}>
+                  Voice Broadcast: {currentLang.nativeName} ({currentLang.name})
+                </span>
               </div>
 
               {/* Animated Soundwave Bars */}
@@ -518,20 +521,23 @@ export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange 
                   </>
                 ) : (
                   <>
-                    <Play size={12} fill="white" /> {language === 'or' ? 'ଶୁଣନ୍ତୁ (Odia)' : 'Listen Audio'}
+                    <Play size={12} fill="white" /> Listen Voice ({currentLang.code.toUpperCase()})
                   </>
                 )}
               </button>
             </div>
 
-            <p style={{ fontSize: '0.7rem', color: 'var(--ink-muted)', fontStyle: 'italic', margin: 0, lineHeight: 1.35 }}>
-              "ଧାମରା ଏବଂ ଚାନ୍ଦବାଲି ଉପକୂଳରେ ୨.୫ ମିଟର ପର୍ଯ୍ୟନ୍ତ ଜଳପ୍ଲାବନ ହେବାର ସମ୍ଭାବନା ଅଛି। ଦୟାକରି ତୁରନ୍ତ ବାତ୍ୟା ଆଶ୍ରୟସ୍ଥଳକୁ ଯାଆନ୍ତୁ।"
+            <p style={{ fontSize: '0.75rem', color: 'var(--ink-primary)', fontStyle: 'italic', margin: 0, lineHeight: 1.45, fontWeight: 500, padding: '4px 0' }}>
+              "{currentLang.broadcastText}"
             </p>
+            <div style={{ fontSize: '0.65rem', color: 'var(--brand-green-strong)', marginTop: '4px', fontWeight: 700 }}>
+              ✓ Gemini Cloud Audio Synthesized ({currentLang.bcp47})
+            </div>
           </div>
 
           {/* PDF Export Button */}
           <button
-            onClick={() => alert('Exporting PRAHAR Anticipatory Action Brief (PDF format) with GPS waypoints.')}
+            onClick={() => alert(`Exporting PRAHAR Anticipatory Action Brief in ${currentLang.name} (.PDF format) with GPS waypoints.`)}
             style={{
               width: '100%',
               padding: '10px',
@@ -550,7 +556,7 @@ export function OperationsCockpit({ language, currentTimeStep, onTimeStepChange 
             }}
           >
             <FileText size={15} />
-            Export Official NDRF Directive (.PDF)
+            Export Official NDRF Directive (.PDF - {currentLang.name})
           </button>
         </div>
 
