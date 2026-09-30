@@ -15,7 +15,8 @@ import {
   Square,
   AlertTriangle,
   Compass,
-  Globe
+  Globe,
+  Layers
 } from 'lucide-react';
 import { BotIcon, TimerIcon, VolumeIcon } from './Icons';
 import { INDIAN_LANGUAGES, LanguageMeta } from '../lib/languages';
@@ -25,6 +26,8 @@ interface OperationsCockpitProps {
   currentTimeStep: string;
   onTimeStepChange: (step: string) => void;
 }
+
+type BasemapStyle = 'carto-dark' | 'google-hybrid' | 'esri-satellite' | 'carto-voyager';
 
 const createSvgIcon = (color: string, label: string) => {
   return L.divIcon({
@@ -58,6 +61,11 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
   const [selectedRole, setSelectedRole] = useState<'NDRF' | 'COLLECTOR' | 'PUBLIC'>('NDRF');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activeStormId, setActiveStormId] = useState<'dana' | 'amphan' | 'fani'>('dana');
+  
+  // Basemap Selector (supports env var or user preference)
+  const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'carto-dark';
+  const [basemap, setBasemap] = useState<BasemapStyle>(defaultBasemap);
+  const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
   const currentLang: LanguageMeta = INDIAN_LANGUAGES.find(l => l.code === selectedLanguage) || INDIAN_LANGUAGES[0];
 
@@ -86,7 +94,38 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
     [20.90, 86.40], [21.15, 86.70], [20.95, 87.05], [20.70, 86.75]
   ];
 
-  // Real Web Speech API voice synthesis in selected Indian language
+  // Basemap Tile Layer URLs
+  const getBasemapConfig = () => {
+    switch (basemap) {
+      case 'google-hybrid':
+        return {
+          url: googleApiKey 
+            ? `https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&key=${googleApiKey}`
+            : 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+          attribution: '&copy; Google Maps Platform'
+        };
+      case 'esri-satellite':
+        return {
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+          attribution: '&copy; Esri World Imagery (Satellite)'
+        };
+      case 'carto-voyager':
+        return {
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          attribution: '&copy; CARTO &copy; OpenStreetMap'
+        };
+      case 'carto-dark':
+      default:
+        return {
+          url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+          attribution: '&copy; CARTO Dark Matter &copy; OpenStreetMap'
+        };
+    }
+  };
+
+  const basemapConfig = getBasemapConfig();
+
+  // Web Speech API voice synthesis
   const handlePlayVoice = () => {
     if ('speechSynthesis' in window) {
       if (isPlayingAudio) {
@@ -208,33 +247,66 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
       {/* CENTER COLUMN: GIS Map & Temporal Scrubber */}
       <div className="card" style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', padding: 0 }}>
         
-        {/* Floating Map Legend */}
-        <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 999, display: 'flex', gap: '6px' }}>
-          <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.68rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
-            <span style={{ width: 8, height: 8, background: '#d03b3b', borderRadius: '2px' }} />
-            <span>&gt; 2.5m Inundation</span>
+        {/* Top Floating Controls: Basemap Switcher & Inundation Legend */}
+        <div style={{ position: 'absolute', top: 12, left: 12, right: 12, zIndex: 999, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', pointerEvents: 'none' }}>
+          
+          {/* Basemap Switcher (Interactive) */}
+          <div className="glass" style={{ padding: '3px 4px', borderRadius: 10, display: 'flex', gap: '4px', pointerEvents: 'auto', background: 'var(--surface-1)' }}>
+            {[
+              { id: 'carto-dark', label: '🌑 Dark War Room' },
+              { id: 'google-hybrid', label: '🛰️ Google Hybrid' },
+              { id: 'esri-satellite', label: '🌍 Satellite' },
+              { id: 'carto-voyager', label: '🗺️ Streets' }
+            ].map(item => (
+              <button
+                key={item.id}
+                onClick={() => setBasemap(item.id as any)}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: 6,
+                  border: 'none',
+                  fontSize: '0.65rem',
+                  fontWeight: basemap === item.id ? 800 : 600,
+                  background: basemap === item.id ? 'var(--brand-green)' : 'transparent',
+                  color: basemap === item.id ? '#ffffff' : 'var(--ink-muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
-          <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.68rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
-            <span style={{ width: 8, height: 8, background: '#f58220', borderRadius: '2px' }} />
-            <span>1.5 - 2.5m</span>
-          </div>
-          <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.68rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
-            <span style={{ width: 8, height: 8, background: '#00836c', borderRadius: '2px' }} />
-            <span>0.5 - 1.5m</span>
+
+          {/* Surge Legend */}
+          <div style={{ display: 'flex', gap: '6px', pointerEvents: 'auto' }}>
+            <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
+              <span style={{ width: 8, height: 8, background: '#d03b3b', borderRadius: '2px' }} />
+              <span>&gt; 2.5m</span>
+            </div>
+            <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
+              <span style={{ width: 8, height: 8, background: '#f58220', borderRadius: '2px' }} />
+              <span>1.5 - 2.5m</span>
+            </div>
+            <div className="glass" style={{ padding: '4px 8px', borderRadius: 8, fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '5px', background: 'var(--surface-1)' }}>
+              <span style={{ width: 8, height: 8, background: '#00836c', borderRadius: '2px' }} />
+              <span>0.5 - 1.5m</span>
+            </div>
           </div>
         </div>
 
         {/* Leaflet Map Canvas */}
         <div style={{ flex: 1, minHeight: '460px', width: '100%' }}>
           <MapContainer 
+            key={basemap}
             center={[20.35, 87.5]} 
             zoom={8} 
             scrollWheelZoom={true} 
             style={{ height: '100%', width: '100%' }}
           >
             <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              attribution={basemapConfig.attribution}
+              url={basemapConfig.url}
             />
 
             {/* Track Polyline */}
@@ -244,7 +316,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
             <Circle 
               center={landfallPosition} 
               radius={65000} 
-              pathOptions={{ color: '#f58220', fillColor: '#f58220', fillOpacity: 0.12, weight: 1.5 }} 
+              pathOptions={{ color: '#f58220', fillColor: '#f58220', fillOpacity: 0.14, weight: 1.5 }} 
             />
 
             {/* Inundation Zones */}
@@ -371,7 +443,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           </div>
 
           <span style={{ fontSize: '0.7rem', color: 'var(--brand-green)', fontWeight: 600 }}>
-            ● Copernicus DEM 30m
+            ● GEE Copernicus 30m Active
           </span>
         </div>
 
