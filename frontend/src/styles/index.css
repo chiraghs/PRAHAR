@@ -1,23 +1,89 @@
-:root {
-  --bg-space: #070d18;
-  --bg-card: rgba(14, 25, 44, 0.75);
-  --bg-card-hover: rgba(20, 36, 62, 0.85);
-  --border-glow: rgba(56, 189, 248, 0.2);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  
-  --primary-cyan: #06b6d4;
-  --primary-glow: rgba(6, 182, 212, 0.35);
-  --coral-alert: #f43f5e;
-  --amber-warning: #f59e0b;
-  --emerald-safe: #10b981;
-  --indigo-accent: #6366f1;
+/* ============================================================
+   PRAHAR AI DEFENSE DESIGN SYSTEM
+   Inspired by AegisVoice AI & Alpha-Fin Design Language
+   Observatory Green/Teal #00836c · Alert Orange #f58220 · Crimson #d03b3b
+   Supports both LIGHT MODE and DARK MODE
+   ============================================================ */
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
-  
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+:root {
+  /* surfaces - light mode */
+  --page: #f2f6f4;
+  --surface-1: #ffffff;
+  --surface-2: #f8faf9;
+  --surface-3: #e6edea;
+  --glass: rgba(255, 255, 255, 0.82);
+
+  /* ink */
+  --ink-primary: #0a1f1a;
+  --ink-secondary: #46584f;
+  --ink-muted: #7d8d86;
+
+  /* brand */
+  --brand-green: #00836c;
+  --brand-green-strong: #00594a;
+  --brand-green-soft: #d8efe8;
+  --brand-cyan: #0891b2;
+  --brand-orange: #f58220;
+  --brand-orange-strong: #c95f04;
+  --brand-orange-soft: #fdecd9;
+  --brand-gradient: linear-gradient(135deg, #00594a 0%, #00836c 55%, #0891b2 100%);
+  --hero-gradient: linear-gradient(120deg, #013d33 0%, #00594a 35%, #00836c 75%, #0891b2 100%);
+
+  /* status */
+  --status-good: #0ca30c;
+  --status-good-text: #067806;
+  --status-warning: #b97d00;
+  --status-serious: #c05621;
+  --status-critical: #d03b3b;
+
+  /* chrome */
+  --hairline: rgba(10, 31, 26, 0.09);
+  --grid: #dfe7e3;
+  --shadow-card: 0 1px 3px rgba(10, 31, 26, 0.05), 0 14px 36px -16px rgba(10, 31, 26, 0.12);
+  --shadow-pop: 0 24px 60px -24px rgba(1, 61, 51, 0.28);
+  --ring: rgba(0, 131, 108, 0.35);
+
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+}
+
+.dark {
+  /* surfaces - dark mode */
+  --page: #06100d;
+  --surface-1: #0d1a16;
+  --surface-2: #12211c;
+  --surface-3: #1a2c26;
+  --glass: rgba(13, 26, 22, 0.78);
+
+  /* ink */
+  --ink-primary: #eef5f2;
+  --ink-secondary: #a8bab2;
+  --ink-muted: #6f817a;
+
+  /* brand */
+  --brand-green: #1da98c;
+  --brand-green-strong: #3ecdae;
+  --brand-green-soft: #10322a;
+  --brand-cyan: #38bdf8;
+  --brand-orange: #f58220;
+  --brand-orange-strong: #ffa14e;
+  --brand-orange-soft: #33210f;
+  --brand-gradient: linear-gradient(135deg, #0b5a4a 0%, #12866e 55%, #1da98c 100%);
+  --hero-gradient: linear-gradient(120deg, #04241d 0%, #0a4237 40%, #0f6351 75%, #14806a 100%);
+
+  /* status */
+  --status-good: #0ca30c;
+  --status-good-text: #35c035;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #e05252;
+
+  /* chrome */
+  --hairline: rgba(255, 255, 255, 0.09);
+  --grid: #22332d;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 36px -18px rgba(0, 0, 0, 0.65);
+  --shadow-pop: 0 24px 70px -24px rgba(0, 0, 0, 0.8);
+  --ring: rgba(29, 169, 140, 0.4);
 }
 
 * {
@@ -26,33 +92,114 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: var(--bg-space);
-  color: var(--text-main);
+  background: var(--page);
+  color: var(--ink-primary);
   font-family: var(--font-sans);
-  overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 40%);
+  -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Glassmorphism Classes */
-.glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glow);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+/* Subtle mesh gradient background */
+.app-mesh {
+  background:
+    radial-gradient(60rem 32rem at 110% -10%, color-mix(in srgb, var(--brand-green) 9%, transparent), transparent 60%),
+    radial-gradient(50rem 30rem at -15% 108%, color-mix(in srgb, var(--brand-orange) 7%, transparent), transparent 55%),
+    var(--page);
 }
 
-.glass-pill {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 9999px;
-  padding: 4px 12px;
+/* ---------- primitives & design tokens ---------- */
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--brand-green);
+}
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hairline);
+}
+
+.lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-pop);
+}
+
+/* Leaflet Container styling */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background: #09121f !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: rgba(13, 26, 22, 0.95) !important;
+  color: #eef5f2 !important;
+  border: 1px solid var(--brand-green) !important;
+  backdrop-filter: blur(14px) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #0a1f1a !important;
+  border: 1px solid var(--brand-green) !important;
+  backdrop-filter: blur(14px) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--surface-1) !important;
+}
+
+/* Audio waveform animated bars */
+@keyframes soundwave {
+  0%, 100% { height: 4px; }
+  50% { height: 26px; }
+}
+
+.waveform-bar {
+  width: 3px;
+  background: var(--brand-green);
+  border-radius: 2px;
+  animation: soundwave 1.2s ease-in-out infinite;
+}
+.waveform-bar:nth-child(2) { animation-delay: 0.15s; }
+.waveform-bar:nth-child(3) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(4) { animation-delay: 0.45s; }
+.waveform-bar:nth-child(5) { animation-delay: 0.2s; }
+.waveform-bar:nth-child(6) { animation-delay: 0.35s; }
+.waveform-bar:nth-child(7) { animation-delay: 0.5s; }
+.waveform-bar:nth-child(8) { animation-delay: 0.25s; }
+
+/* Pulse animation for radar & alert badges */
+@keyframes radar-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+.animate-radar {
+  animation: radar-pulse 2.5s infinite;
 }
 
 /* Custom Scrollbars */
@@ -61,44 +208,12 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--hairline);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-cyan);
-}
-
-/* Leaflet Container customization */
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  background: #09121f !important;
-  border-radius: 12px;
-}
-
-.leaflet-popup-content-wrapper {
-  background: rgba(15, 23, 42, 0.95) !important;
-  color: #f8fafc !important;
-  border: 1px solid var(--primary-cyan) !important;
-  backdrop-filter: blur(12px) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
-}
-
-.leaflet-popup-tip {
-  background: rgba(15, 23, 42, 0.95) !important;
-}
-
-/* Pulse Animation */
-@keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.2); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.8; }
-}
-
-.pulsing-alert {
-  animation: pulse-ring 2s infinite ease-in-out;
+  background: var(--brand-green);
 }
