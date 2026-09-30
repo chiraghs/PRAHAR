@@ -9,8 +9,8 @@ import { PhoneSimulator } from './components/PhoneSimulator';
 import { Compass, Building2, Coins, Server, Smartphone } from 'lucide-react';
 
 export default function App() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [language, setLanguage] = useState<string>('or');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<string>('en');
   const [activeTab, setActiveTab] = useState<'cockpit' | 'mobile' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
   const [currentTimeStep, setCurrentTimeStep] = useState<string>('T-24h');
 
