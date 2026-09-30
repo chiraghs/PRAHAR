@@ -94,7 +94,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
     [20.90, 86.40], [21.15, 86.70], [20.95, 87.05], [20.70, 86.75]
   ];
 
-  // Basemap Tile Layer URLs
+  // Basemap Tile Layer URLs - Standard URLs without {r}
   const getBasemapConfig = () => {
     switch (basemap) {
       case 'google-hybrid':
@@ -102,23 +102,27 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           url: googleApiKey 
             ? `https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&key=${googleApiKey}`
             : 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-          attribution: '&copy; Google Maps Platform'
+          attribution: '&copy; Google Maps Platform',
+          subdomains: 'abc'
         };
       case 'esri-satellite':
         return {
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-          attribution: '&copy; Esri World Imagery (Satellite)'
+          attribution: '&copy; Esri World Imagery (Satellite)',
+          subdomains: 'abc'
         };
       case 'carto-voyager':
         return {
-          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-          attribution: '&copy; CARTO &copy; OpenStreetMap'
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+          attribution: '&copy; CARTO &copy; OpenStreetMap',
+          subdomains: 'abcd'
         };
       case 'carto-dark':
       default:
         return {
-          url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-          attribution: '&copy; CARTO Dark Matter &copy; OpenStreetMap'
+          url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+          attribution: '&copy; CARTO Dark Matter &copy; OpenStreetMap',
+          subdomains: 'abcd'
         };
     }
   };
@@ -253,19 +257,19 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           {/* Basemap Switcher (Interactive) */}
           <div className="glass" style={{ padding: '3px 4px', borderRadius: 10, display: 'flex', gap: '4px', pointerEvents: 'auto', background: 'var(--surface-1)' }}>
             {[
-              { id: 'carto-dark', label: '🌑 Dark War Room' },
-              { id: 'google-hybrid', label: '🛰️ Google Hybrid' },
+              { id: 'carto-dark', label: '🌑 CARTO Dark' },
               { id: 'esri-satellite', label: '🌍 Satellite' },
-              { id: 'carto-voyager', label: '🗺️ Streets' }
+              { id: 'carto-voyager', label: '🗺️ Streets' },
+              { id: 'google-hybrid', label: '🛰️ Google' }
             ].map(item => (
               <button
                 key={item.id}
                 onClick={() => setBasemap(item.id as any)}
                 style={{
-                  padding: '4px 8px',
+                  padding: '5px 9px',
                   borderRadius: 6,
                   border: 'none',
-                  fontSize: '0.65rem',
+                  fontSize: '0.68rem',
                   fontWeight: basemap === item.id ? 800 : 600,
                   background: basemap === item.id ? 'var(--brand-green)' : 'transparent',
                   color: basemap === item.id ? '#ffffff' : 'var(--ink-muted)',
@@ -295,18 +299,21 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           </div>
         </div>
 
-        {/* Leaflet Map Canvas */}
-        <div style={{ flex: 1, minHeight: '460px', width: '100%' }}>
+        {/* Leaflet Map Canvas - Explicit 540px height & centered on coastal Odisha */}
+        <div style={{ width: '100%', height: '540px', minHeight: '540px', position: 'relative' }}>
           <MapContainer 
             key={basemap}
-            center={[20.35, 87.5]} 
+            center={[20.72, 86.92]} 
             zoom={8} 
             scrollWheelZoom={true} 
-            style={{ height: '100%', width: '100%' }}
+            style={{ height: '540px', width: '100%' }}
           >
             <TileLayer
+              key={basemap}
               attribution={basemapConfig.attribution}
               url={basemapConfig.url}
+              subdomains={basemapConfig.subdomains}
+              maxZoom={19}
             />
 
             {/* Track Polyline */}
