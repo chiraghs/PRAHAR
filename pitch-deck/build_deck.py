@@ -35,7 +35,6 @@ def create_pptx():
         fill.fore_color.rgb = color
 
     def add_header(slide, title, category="ANTICIPATORY RESILIENCE"):
-        # Category accent pill/bar
         bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.5), Inches(0.08), Inches(0.45))
         bar.fill.solid()
         bar.fill.fore_color.rgb = GREEN_ACCENT
@@ -57,7 +56,6 @@ def create_pptx():
     s1 = prs.slides.add_slide(blank_slide_layout)
     set_slide_bg(s1, DARK_BG)
 
-    # Top pill
     pill = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(4.3), Inches(1.2), Inches(4.7), Inches(0.45))
     pill.fill.solid()
     pill.fill.fore_color.rgb = RGBColor(16, 42, 67)
@@ -70,7 +68,6 @@ def create_pptx():
     p.font.color.rgb = RGBColor(0, 209, 178)
     p.alignment = PP_ALIGN.CENTER
 
-    # Main Title
     t_box = s1.shapes.add_textbox(Inches(1.5), Inches(1.9), Inches(10.3), Inches(1.2))
     tf = t_box.text_frame
     p = tf.paragraphs[0]
@@ -80,7 +77,6 @@ def create_pptx():
     p.font.color.rgb = WHITE
     p.alignment = PP_ALIGN.CENTER
 
-    # Subtitle
     sub_box = s1.shapes.add_textbox(Inches(1.5), Inches(3.1), Inches(10.3), Inches(0.6))
     tf = sub_box.text_frame
     p = tf.paragraphs[0]
@@ -90,7 +86,6 @@ def create_pptx():
     p.font.color.rgb = RGBColor(148, 163, 184)
     p.alignment = PP_ALIGN.CENTER
 
-    # Tagline
     tag_box = s1.shapes.add_textbox(Inches(1.5), Inches(3.7), Inches(10.3), Inches(0.5))
     tf = tag_box.text_frame
     p = tf.paragraphs[0]
@@ -99,7 +94,6 @@ def create_pptx():
     p.font.color.rgb = RGBColor(100, 116, 139)
     p.alignment = PP_ALIGN.CENTER
 
-    # 4 Tech Pills
     pills = [
         ("Google Earth Engine", RGBColor(30, 58, 95)),
         ("Gemini 1.5 Flash", RGBColor(76, 29, 149)),
@@ -121,7 +115,6 @@ def create_pptx():
         p.font.color.rgb = WHITE
         p.alignment = PP_ALIGN.CENTER
 
-    # Bottom Callout Box
     foot_box = s1.shapes.add_textbox(Inches(2.0), Inches(5.8), Inches(9.3), Inches(0.8))
     tf = foot_box.text_frame
     p = tf.paragraphs[0]
@@ -157,7 +150,6 @@ def create_pptx():
         card.fill.fore_color.rgb = WHITE
         card.line.color.rgb = BORDER_LIGHT
 
-        # Top indicator bar
         ib = s2.shapes.add_shape(MSO_SHAPE.RECTANGLE, x + Inches(0.2), card_y + Inches(0.25), Inches(0.4), Inches(0.06))
         ib.fill.solid()
         ib.fill.fore_color.rgb = accent
@@ -178,7 +170,6 @@ def create_pptx():
         p2.font.size = Pt(11)
         p2.font.color.rgb = INK_MUTED
 
-    # Bottom Mission Banner
     mb = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.8), Inches(11.7), Inches(0.9))
     mb.fill.solid()
     mb.fill.fore_color.rgb = GREEN_SOFT
@@ -198,7 +189,6 @@ def create_pptx():
     set_slide_bg(s3, LIGHT_BG)
     add_header(s3, "The Coastal Vulnerability Gap")
 
-    # Left: The Problem Today
     p_box = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(1.3), Inches(5.7), Inches(5.4))
     p_box.fill.solid()
     p_box.fill.fore_color.rgb = WHITE
@@ -230,7 +220,6 @@ def create_pptx():
         p2.font.size = Pt(11)
         p2.font.color.rgb = INK_MUTED
 
-    # Right: The Human & Operational Cost
     q_box = s3.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.8), Inches(1.3), Inches(5.7), Inches(5.4))
     q_box.fill.solid()
     q_box.fill.fore_color.rgb = RGBColor(254, 242, 242)
@@ -302,7 +291,6 @@ def create_pptx():
         p2.font.size = Pt(12)
         p2.font.color.rgb = INK_MUTED
 
-    # Bottom 5-minute value box
     val_box = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.6), Inches(11.7), Inches(1.1))
     val_box.fill.solid()
     val_box.fill.fore_color.rgb = GREEN_SOFT
@@ -322,12 +310,10 @@ def create_pptx():
     set_slide_bg(s5, LIGHT_BG)
     add_header(s5, "Live Operations Cockpit", "INTERACTIVE DEMONSTRATION")
 
-    # Image
     img_path = os.path.join(screenshots_dir, "cockpit_light.png")
     if os.path.exists(img_path):
         s5.shapes.add_picture(img_path, Inches(0.8), Inches(1.3), Inches(8.2), Inches(5.4))
 
-    # Right Feature Card
     rf = s5.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(9.3), Inches(1.3), Inches(3.2), Inches(5.4))
     rf.fill.solid()
     rf.fill.fore_color.rgb = WHITE
@@ -373,7 +359,6 @@ def create_pptx():
         s6.shapes.add_picture(img_odisha, Inches(0.8), Inches(1.3), Inches(5.7), Inches(3.8))
         s6.shapes.add_picture(img_dark, Inches(6.8), Inches(1.3), Inches(5.7), Inches(3.8))
 
-    # Bottom explanations
     b1 = s6.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.3), Inches(5.7), Inches(1.7))
     b1.fill.solid()
     b1.fill.fore_color.rgb = WHITE
@@ -417,7 +402,6 @@ def create_pptx():
     if os.path.exists(img_mob):
         s7.shapes.add_picture(img_mob, Inches(0.8), Inches(1.3), Inches(6.0), Inches(5.4))
 
-    # Right Content Box
     rc = s7.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(1.3), Inches(5.4), Inches(5.4))
     rc.fill.solid()
     rc.fill.fore_color.rgb = WHITE
@@ -436,7 +420,7 @@ def create_pptx():
         ("Offline-First Progressive Web App", "Pre-caches elevation maps and shelter waypoints. Fully functional even when mobile towers lose power or backhaul connections."),
         ("Safe Navigation to Multi-Purpose Shelters", "Real-time routing diverts citizens away from flooded roads toward elevated shelters with verified remaining capacity."),
         ("One-Tap SOS Distress Beacon", "Broadcasts GPS coordinates, battery level, and family count to district emergency operations centers."),
-        ("Parametric Liquidity Relief Pass", "Digital QR credentials enable immediate ration and relief fund verification at local evacuation shelters.")
+        ("Parametric Relief QR Pass", "Digital QR credentials enable immediate ration and relief fund verification at local evacuation shelters.")
     ]
     for mft, mfd in mob_features:
         p1 = tf.add_paragraph()
@@ -461,7 +445,6 @@ def create_pptx():
     if os.path.exists(img_infra):
         s8.shapes.add_picture(img_infra, Inches(0.8), Inches(1.3), Inches(7.8), Inches(5.4))
 
-    # Right Matrix Explanations
     re = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(8.9), Inches(1.3), Inches(3.6), Inches(5.4))
     re.fill.solid()
     re.fill.fore_color.rgb = WHITE
@@ -505,7 +488,6 @@ def create_pptx():
     if os.path.exists(img_escrow):
         s9.shapes.add_picture(img_escrow, Inches(0.8), Inches(1.3), Inches(6.0), Inches(5.4))
 
-    # Right Math Formulation Card
     mc = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.1), Inches(1.3), Inches(5.4), Inches(5.4))
     mc.fill.solid()
     mc.fill.fore_color.rgb = WHITE
@@ -520,7 +502,6 @@ def create_pptx():
     p.font.color.rgb = GREEN_ACCENT
     p.space_after = Pt(10)
 
-    # Formula Box
     fb = s9.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(7.3), Inches(2.0), Inches(5.0), Inches(1.1))
     fb.fill.solid()
     fb.fill.fore_color.rgb = RGBColor(241, 245, 249)
@@ -554,60 +535,89 @@ def create_pptx():
         p1.space_before = Pt(4)
 
     # ==========================================
-    # SLIDE 10: ARCHITECTURE & CALL TO ACTION
+    # SLIDE 10: SYSTEM ARCHITECTURE (FROM README.MD)
     # ==========================================
     s10 = prs.slides.add_slide(blank_slide_layout)
-    set_slide_bg(s10, DARK_BG)
+    set_slide_bg(s10, LIGHT_BG)
+    add_header(s10, "System Architecture", "FROM SYSTEM README SPECIFICATION")
 
-    # Header
-    bar = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(0.5), Inches(0.08), Inches(0.45))
-    bar.fill.solid()
-    bar.fill.fore_color.rgb = GREEN_ACCENT
-    bar.line.fill.background()
+    # 4 Tier Cards representing the README flowchart
+    tiers = [
+        ("1. External Feeds & Telemetry", [
+            "• IMD / JTWC: Real-time cyclone tracks & cones",
+            "• Google Earth Engine: Copernicus DEM 30m, Sentinel-1 SAR",
+            "• OSM Overpass: Hospitals, Sub-stations, Arterial Bridges",
+            "• INCOIS / NOAA: Coastal Tide Gauges & Bathymetry"
+        ], RGBColor(30, 58, 95)),
 
-    tx_box = s10.shapes.add_textbox(Inches(1.0), Inches(0.45), Inches(11.5), Inches(0.55))
-    tf = tx_box.text_frame
+        ("2. Ingestion Microservice (:8001)", [
+            "• Async Ingestion Worker & Poller Daemon",
+            "• Track Normalizer & Cone of Uncertainty Generator",
+            "• GEE Elevation & Bathymetric Sampler",
+            "• OSM Infrastructure Feature Extractor"
+        ], GREEN_ACCENT),
+
+        ("3. Core Simulation Engine (:8010)", [
+            "• FastAPI 0.111 Application Core",
+            "• SLOSH Storm Surge & Inundation Model",
+            "• Compound River-Surge Backwater Engine",
+            "• NetworkX Infrastructure Severance Graph",
+            "• Parametric Escrow Controller & Gemini AI"
+        ], ORANGE_ACCENT),
+
+        ("4. Storage & Presentation Tier", [
+            "• PostgreSQL / PostGIS Spatial DB & Redis Cache",
+            "• React 18 + TS + Leaflet GIS 3D Cockpit (:5174)",
+            "• T-72h to Landfall Temporal Playback Scrubber",
+            "• Role-Differentiated SOPs & 22 Indic Audio"
+        ], CRIMSON)
+    ]
+
+    tier_w = Inches(2.75)
+    tier_h = Inches(4.5)
+    start_x = Inches(0.8)
+
+    for i, (ttitle, items, accent) in enumerate(tiers):
+        x = start_x + i * (tier_w + Inches(0.23))
+        card = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(1.3), tier_w, tier_h)
+        card.fill.solid()
+        card.fill.fore_color.rgb = WHITE
+        card.line.color.rgb = BORDER_LIGHT
+
+        top_bar = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, x + Inches(0.2), Inches(1.5), Inches(0.5), Inches(0.08))
+        top_bar.fill.solid()
+        top_bar.fill.fore_color.rgb = accent
+        top_bar.line.fill.background()
+
+        tb = s10.shapes.add_textbox(x + Inches(0.2), Inches(1.7), tier_w - Inches(0.4), tier_h - Inches(0.6))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        p.text = ttitle
+        p.font.size = Pt(13)
+        p.font.bold = True
+        p.font.color.rgb = INK_PRIMARY
+        p.space_after = Pt(14)
+
+        for it in items:
+            p2 = tf.add_paragraph()
+            p2.text = it
+            p2.font.size = Pt(10)
+            p2.font.color.rgb = INK_MUTED
+            p2.space_after = Pt(6)
+
+    # Bottom Pipeline Summary Banner
+    pb = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.8))
+    pb.fill.solid()
+    pb.fill.fore_color.rgb = RGBColor(241, 245, 249)
+    pb.line.color.rgb = RGBColor(203, 213, 225)
+    tf = pb.text_frame
     p = tf.paragraphs[0]
-    p.text = "Enterprise System Architecture & Immediate Readiness"
-    p.font.size = Pt(22)
+    p.text = "⚡ Decoupled Pipeline: External Feeds ➔ Ingestion Worker (:8001) ➔ Spatial DB ➔ Core Engine (:8010) ➔ React GIS (:5174)"
+    p.font.size = Pt(12)
     p.font.bold = True
-    p.font.color.rgb = WHITE
-
-    # Top Architecture Screenshot
-    img_arch = os.path.join(screenshots_dir, "architecture_pipeline.png")
-    if os.path.exists(img_arch):
-        s10.shapes.add_picture(img_arch, Inches(0.8), Inches(1.2), Inches(11.7), Inches(3.6))
-
-    # Bottom Call to Action Card
-    cta = s10.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.8), Inches(5.1), Inches(11.7), Inches(1.8))
-    cta.fill.solid()
-    cta.fill.fore_color.rgb = DARK_CARD
-    cta.line.color.rgb = GREEN_ACCENT
-    tf = cta.text_frame
-    tf.word_wrap = True
-    tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = Inches(0.25)
-
-    p1 = tf.paragraphs[0]
-    p1.text = "Anticipate. Protect. Empower Coastal Resilience."
-    p1.font.size = Pt(22)
-    p1.font.bold = True
-    p1.font.color.rgb = WHITE
-    p1.alignment = PP_ALIGN.CENTER
-    p1.space_after = Pt(6)
-
-    p2 = tf.add_paragraph()
-    p2.text = "Ready for immediate deployment across NDMA, OSDMA, and Coastal APAC Disaster Management Authorities."
-    p2.font.size = Pt(13)
-    p2.font.color.rgb = RGBColor(148, 163, 184)
-    p2.alignment = PP_ALIGN.CENTER
-    p2.space_after = Pt(8)
-
-    p3 = tf.add_paragraph()
-    p3.text = "⚡ Ingestion Poller (Port 8001)  •  Core Simulation Engine (Port 8010)  •  Vite Command Center (Port 5174)  •  Zero Legacy Disruption"
-    p3.font.size = Pt(11)
-    p3.font.bold = True
-    p3.font.color.rgb = RGBColor(0, 209, 178)
-    p3.alignment = PP_ALIGN.CENTER
+    p.font.color.rgb = GREEN_ACCENT
+    p.alignment = PP_ALIGN.CENTER
 
     out_pptx = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/PRAHAR-Pitch-Deck.pptx"
     prs.save(out_pptx)

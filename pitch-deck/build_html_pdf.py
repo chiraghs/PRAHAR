@@ -41,7 +41,6 @@ html_content = """<!DOCTYPE html>
     justify-content: space-between;
   }
 
-  /* Theme variations */
   .slide.dark {
     background: radial-gradient(circle at 50% 20%, #0d2238 0%, #071523 100%);
     color: #ffffff;
@@ -52,7 +51,6 @@ html_content = """<!DOCTYPE html>
     color: #0f172a;
   }
 
-  /* Headers */
   .slide-header {
     display: flex;
     align-items: center;
@@ -87,7 +85,6 @@ html_content = """<!DOCTYPE html>
     margin-bottom: 4px;
   }
 
-  /* Cards */
   .card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -100,7 +97,6 @@ html_content = """<!DOCTYPE html>
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Pills */
   .pill {
     display: inline-flex;
     align-items: center;
@@ -111,7 +107,6 @@ html_content = """<!DOCTYPE html>
     font-weight: 700;
   }
 
-  /* Screenshot wrapper */
   .screenshot-frame {
     border-radius: 20px;
     overflow: hidden;
@@ -127,7 +122,6 @@ html_content = """<!DOCTYPE html>
     display: block;
   }
 
-  /* Grid helpers */
   .grid-5 {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -231,7 +225,6 @@ html_content = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- Mission banner -->
     <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 24px 36px; display: flex; align-items: center; gap: 20px;">
       <div style="font-size: 28px;">🎯</div>
       <div style="font-size: 17px; font-weight: 700; color: #00836c; line-height: 1.5;">
@@ -254,7 +247,6 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <div class="grid-2">
-        <!-- Left: The Problem Today -->
         <div class="card" style="padding: 45px 40px;">
           <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
             <span style="font-size: 22px;">🔴</span>
@@ -279,7 +271,6 @@ html_content = """<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Right: Quote box -->
         <div class="card" style="padding: 50px 45px; background: #fff5f5; border: 1.5px solid #fed7d7; display: flex; flex-direction: column; justify-content: center; text-align: center;">
           <div style="font-size: 54px; margin-bottom: 20px;">⚠️</div>
           <blockquote style="font-size: 32px; font-family: 'Lora', serif; font-weight: 600; color: #9b2c2c; line-height: 1.4; margin-bottom: 30px;">
@@ -331,7 +322,6 @@ html_content = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- 5-Minute DM Value -->
     <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 26px 36px; display: flex; align-items: center; gap: 20px;">
       <div style="font-size: 32px;">💡</div>
       <div style="font-size: 17px; font-weight: 700; color: #00836c; line-height: 1.5;">
@@ -354,12 +344,10 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <div style="display: grid; grid-template-columns: 1200px 1fr; gap: 35px; align-items: stretch;">
-        <!-- Left: Crisp Screenshot -->
         <div class="screenshot-frame" style="height: 680px;">
           <img src="screenshots/cockpit_light.png" alt="Operations Cockpit Light Mode">
         </div>
 
-        <!-- Right: Highlights -->
         <div class="card" style="padding: 35px 28px; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <h3 style="font-size: 22px; font-weight: 800; color: #00836c; margin-bottom: 20px;">Real-Time Capabilities</h3>
@@ -457,12 +445,10 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <div style="display: grid; grid-template-columns: 1000px 1fr; gap: 35px; align-items: stretch;">
-        <!-- Left: Phone Simulator Screenshot -->
         <div class="screenshot-frame" style="height: 680px; display: flex; justify-content: center; align-items: center; background: #f1f5f9;">
           <img src="screenshots/mobile_simulator.png" alt="Mobile Simulator PWA" style="height: 100%; width: auto; object-fit: contain;">
         </div>
 
-        <!-- Right: Mobile Features -->
         <div class="card" style="padding: 40px 32px; display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <h3 style="font-size: 24px; font-weight: 800; color: #00836c; margin-bottom: 24px;">📱 Citizen Protection Features</h3>
@@ -618,41 +604,95 @@ html_content = """<!DOCTYPE html>
   </div>
 
   <!-- ==========================================
-       SLIDE 10: ARCHITECTURE & DEPLOYMENT (DARK)
+       SLIDE 10: SYSTEM ARCHITECTURE (FROM README.MD)
   =========================================== -->
-  <div class="slide dark" style="padding: 50px 90px;">
+  <div class="slide light">
     <div>
-      <div class="slide-header" style="margin-bottom: 25px;">
-        <div class="accent-bar" style="background: #00d1b2;"></div>
+      <div class="slide-header">
+        <div class="accent-bar" style="background: #00836c;"></div>
         <div>
-          <div class="slide-category" style="color: #00d1b2;">Readiness & Scalability</div>
-          <h2 class="slide-title">Enterprise System Architecture & Immediate Readiness</h2>
+          <div class="slide-category">System Specification (README.md)</div>
+          <h2 class="slide-title">System Architecture & Decoupled Pipelines</h2>
         </div>
       </div>
 
-      <!-- Screenshot of Architecture -->
-      <div class="screenshot-frame" style="height: 480px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.15);">
-        <img src="screenshots/architecture_pipeline.png" alt="Architecture & GEE Pipeline">
+      <!-- 4 Core Columns / Tiers matching README -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 25px;">
+        
+        <!-- Tier 1 -->
+        <div class="card" style="padding: 28px 24px; border-top: 5px solid #1e3a5f;">
+          <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #1e3a5f; margin-bottom: 8px;">Tier 1: Telemetry</div>
+          <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">External Feeds</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #64748b; line-height: 1.5;">
+            <li><strong style="color: #0f172a;">• IMD / JTWC:</strong> Real-time cyclone tracks & cone coordinates</li>
+            <li><strong style="color: #0f172a;">• GEE API:</strong> Copernicus DEM 30m, Sentinel-1 SAR, GPM Rain</li>
+            <li><strong style="color: #0f172a;">• OSM Overpass:</strong> Hospitals, substations, arterial bridges</li>
+            <li><strong style="color: #0f172a;">• INCOIS / NOAA:</strong> Real-time coastal tide station bathymetry</li>
+          </ul>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="card" style="padding: 28px 24px; border-top: 5px solid #00836c;">
+          <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #00836c; margin-bottom: 8px;">Tier 2: Ingestion (:8001)</div>
+          <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">Ingestion Microservice</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #64748b; line-height: 1.5;">
+            <li><strong style="color: #0f172a;">• Async Worker:</strong> Dedicated background poller engine</li>
+            <li><strong style="color: #0f172a;">• Track Normalizer:</strong> Cones & waypoints parser</li>
+            <li><strong style="color: #0f172a;">• Raster Pipeline:</strong> GEE elevation & bathymetry sampler</li>
+            <li><strong style="color: #0f172a;">• Feature Extractor:</strong> Lifeline critical assets extractor</li>
+          </ul>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="card" style="padding: 28px 24px; border-top: 5px solid #f58220;">
+          <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #f58220; margin-bottom: 8px;">Tier 3: Core Simulation (:8010)</div>
+          <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">FastAPI Core Engine</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #64748b; line-height: 1.5;">
+            <li><strong style="color: #0f172a;">• SLOSH Surge Model:</strong> Coastal inundation simulator</li>
+            <li><strong style="color: #0f172a;">• Compound Flood:</strong> River-surge backwater engine</li>
+            <li><strong style="color: #0f172a;">• NetworkX Graph:</strong> Road severance & isolation solver</li>
+            <li><strong style="color: #0f172a;">• Gemini Flash:</strong> Multimodal advisory & SOP generation</li>
+          </ul>
+        </div>
+
+        <!-- Tier 4 -->
+        <div class="card" style="padding: 28px 24px; border-top: 5px solid #d03b3b;">
+          <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #d03b3b; margin-bottom: 8px;">Tier 4: Presentation (:5174)</div>
+          <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">React 18 + TS + Vite</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #64748b; line-height: 1.5;">
+            <li><strong style="color: #0f172a;">• National War Room:</strong> State-level ops command cockpit</li>
+            <li><strong style="color: #0f172a;">• Leaflet GIS Map:</strong> 3D inundation & severance layer</li>
+            <li><strong style="color: #0f172a;">• Temporal Scrubber:</strong> T-72h to Landfall simulation</li>
+            <li><strong style="color: #0f172a;">• 22 Indic Audio:</strong> Web Speech multimodal broadcasting</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Pipeline Flow Banner (Direct from README flowchart) -->
+      <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 22px 30px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="font-size: 15px; font-weight: 800; color: #00836c;">
+          ⚡ Full Data Flow:
+        </div>
+        <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; display: flex; gap: 12px; align-items: center;">
+          <span>IMD / GEE / OSM Feeds</span>
+          <span style="color: #00836c;">➔</span>
+          <span>Ingestion Worker (:8001)</span>
+          <span style="color: #00836c;">➔</span>
+          <span>PostGIS & Redis Cache</span>
+          <span style="color: #00836c;">➔</span>
+          <span>FastAPI Engine (:8010)</span>
+          <span style="color: #00836c;">➔</span>
+          <span>Gemini AI SOPs</span>
+          <span style="color: #00836c;">➔</span>
+          <span style="color: #00836c;">War Room UI (:5174)</span>
+        </div>
       </div>
     </div>
 
-    <!-- Bottom CTA Card -->
-    <div class="card" style="padding: 35px 50px; text-align: center; border: 1.5px solid #00836c; background: rgba(13, 34, 56, 0.95);">
-      <h2 style="font-size: 38px; font-weight: 900; color: #ffffff; margin-bottom: 10px;">
-        Anticipate. Protect. Empower Coastal Resilience.
-      </h2>
-      <p style="font-size: 20px; color: #94a3b8; margin-bottom: 20px;">
-        Deployable across National, State & District Disaster Authorities in under 48 hours with zero structural changes to legacy data.
-      </p>
-      <div style="display: flex; gap: 20px; justify-content: center; font-size: 15px; font-weight: 700; color: #00d1b2;">
-        <span>⚡ Ingestion Poller (Port 8001)</span>
-        <span>•</span>
-        <span>⚡ FastAPI Core Engine (Port 8010)</span>
-        <span>•</span>
-        <span>⚡ Vite GIS Command Center (Port 5174)</span>
-        <span>•</span>
-        <span>⚡ 100% Free Open Baseline</span>
-      </div>
+    <div style="font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between;">
+      <span>Architecture Specification from README.md</span>
+      <span>Deployable with ./setup.sh & Docker Compose</span>
     </div>
   </div>
 
@@ -664,7 +704,7 @@ html_path = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/deck.html"
 with open(html_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print(f"Wrote HTML deck to: {html_path}")
+print(f"Wrote updated HTML deck to: {html_path}")
 
 pdf_path = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/PRAHAR-Pitch-Deck.pdf"
 chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -681,6 +721,6 @@ print("Executing Chrome headless PDF generation...")
 res = subprocess.run(cmd, capture_output=True, text=True)
 print("Returncode:", res.returncode)
 if os.path.exists(pdf_path):
-    print(f"Successfully generated PDF: {pdf_path} (Size: {os.path.getsize(pdf_path)} bytes)")
+    print(f"Successfully generated updated PDF: {pdf_path} (Size: {os.path.getsize(pdf_path)} bytes)")
 else:
     print("PDF generation failed:", res.stderr)
