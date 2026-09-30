@@ -62,8 +62,8 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activeStormId, setActiveStormId] = useState<'dana' | 'amphan' | 'fani'>('dana');
   
-  // Basemap Selector: Default is High-Res Satellite View
-  const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'satellite';
+  // Basemap Selector: Default is Topo / Streets View
+  const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'streets';
   const [basemap, setBasemap] = useState<BasemapStyle>(defaultBasemap);
   const googleApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -94,7 +94,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
     [20.90, 86.40], [21.15, 86.70], [20.95, 87.05], [20.70, 86.75]
   ];
 
-  // Basemap Tile Layer URLs - High-Resolution Satellite & Open Topography
+  // Basemap Tile Layer URLs - Topo / Streets & Satellite
   const getBasemapConfig = () => {
     switch (basemap) {
       case 'google-hybrid':
@@ -104,16 +104,16 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
             : 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
           attribution: '&copy; Google Maps Platform'
         };
-      case 'streets':
-        return {
-          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          attribution: '&copy; OpenStreetMap contributors'
-        };
       case 'satellite':
-      default:
         return {
           url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
           attribution: '&copy; High-Resolution Satellite Telemetry &bull; Earth Observation'
+        };
+      case 'streets':
+      default:
+        return {
+          url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          attribution: '&copy; OpenStreetMap contributors'
         };
     }
   };
