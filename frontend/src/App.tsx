@@ -5,12 +5,13 @@ import { OperationsCockpit } from './components/OperationsCockpit';
 import { InfrastructureMatrix } from './components/InfrastructureMatrix';
 import { ParametricEscrow } from './components/ParametricEscrow';
 import { ArchitectureView } from './components/ArchitectureView';
-import { Compass, Building2, Coins, Server } from 'lucide-react';
+import { PhoneSimulator } from './components/PhoneSimulator';
+import { Compass, Building2, Coins, Server, Smartphone } from 'lucide-react';
 
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [language, setLanguage] = useState<string>('or');
-  const [activeTab, setActiveTab] = useState<'cockpit' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
+  const [activeTab, setActiveTab] = useState<'cockpit' | 'mobile' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
   const [currentTimeStep, setCurrentTimeStep] = useState<string>('T-24h');
 
   // Sync theme with DOM
@@ -46,9 +47,10 @@ export default function App() {
 
         {/* View Navigation Tabs */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ display: 'flex', gap: '6px', background: 'var(--surface-2)', padding: '4px', borderRadius: '14px', border: '1px solid var(--hairline)' }}>
+          <div style={{ display: 'flex', gap: '6px', background: 'var(--surface-2)', padding: '4px', borderRadius: '14px', border: '1px solid var(--hairline)', flexWrap: 'wrap' }}>
             {[
               { id: 'cockpit', label: 'Operations Cockpit', icon: <Compass size={15} /> },
+              { id: 'mobile', label: 'Mobile Simulator (PWA)', icon: <Smartphone size={15} /> },
               { id: 'infrastructure', label: 'Infrastructure Matrix (5)', icon: <Building2 size={15} /> },
               { id: 'parametric', label: 'Parametric Liquidity Escrow', icon: <Coins size={15} /> },
               { id: 'architecture', label: 'Architecture & GEE Pipeline', icon: <Server size={15} /> }
@@ -95,6 +97,12 @@ export default function App() {
               selectedLanguage={language}
               currentTimeStep={currentTimeStep}
               onTimeStepChange={setCurrentTimeStep}
+            />
+          )}
+
+          {activeTab === 'mobile' && (
+            <PhoneSimulator 
+              selectedLanguage={language}
             />
           )}
 
