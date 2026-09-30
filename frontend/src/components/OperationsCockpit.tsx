@@ -20,14 +20,65 @@ import {
 } from 'lucide-react';
 import { BotIcon, TimerIcon, VolumeIcon } from './Icons';
 import { INDIAN_LANGUAGES, LanguageMeta } from '../lib/languages';
+import { COASTAL_STATES } from './StateFilterBar';
 
 interface OperationsCockpitProps {
   selectedLanguage: string;
+  selectedState?: string;
   currentTimeStep: string;
   onTimeStepChange: (step: string) => void;
 }
 
 type BasemapStyle = 'satellite' | 'streets' | 'google-hybrid';
+
+const STATE_DISTRICT_DATA: Record<string, { districts: { name: string; score: number; level: string; color: string }[]; chokePoint: string }> = {
+  ALL: {
+    districts: [
+      { name: 'Bhadrak (Odisha)', score: 94, level: 'Catastrophic', color: 'var(--status-critical)' },
+      { name: 'Kendrapara (Odisha)', score: 89, level: 'Critical', color: 'var(--status-critical)' },
+      { name: 'South 24 Parganas (WB)', score: 88, level: 'Critical', color: 'var(--status-critical)' },
+      { name: 'East Medinipur (WB)', score: 84, level: 'Severe', color: 'var(--brand-orange)' },
+      { name: 'Srikakulam (AP)', score: 75, level: 'Elevated', color: 'var(--status-warning)' }
+    ],
+    chokePoint: 'Inter-state coastal coordination active; NDRF 1st, 2nd & 10th Battalions staged across Balasore-Digha-Srikakulam arterial corridor.'
+  },
+  ODISHA: {
+    districts: [
+      { name: 'Bhadrak District', score: 94, level: 'Catastrophic', color: 'var(--status-critical)' },
+      { name: 'Kendrapara Lowlands', score: 89, level: 'Critical', color: 'var(--status-critical)' },
+      { name: 'Jagatsinghpur Estuary', score: 82, level: 'Severe', color: 'var(--brand-orange)' },
+      { name: 'Balasore Coastal Belt', score: 76, level: 'Elevated', color: 'var(--status-warning)' }
+    ],
+    chokePoint: 'Dhamra & Baitarani river backflow coincides with 3.1m high surge, blocking seaward drainage across Bhadrak and Kendrapara.'
+  },
+  WEST_BENGAL: {
+    districts: [
+      { name: 'South 24 Parganas', score: 88, level: 'Critical', color: 'var(--status-critical)' },
+      { name: 'East Medinipur (Digha/Contai)', score: 84, level: 'Severe', color: 'var(--brand-orange)' },
+      { name: 'North 24 Parganas (Sundarbans)', score: 79, level: 'Elevated', color: 'var(--status-warning)' },
+      { name: 'Howrah Lowland Riverine', score: 62, level: 'Watch', color: 'var(--brand-green)' }
+    ],
+    chokePoint: 'Hooghly River tidal bore combined with 2.2m surge threatening earthen dykes at Sagar Island, Kakdwip & Gosaba.'
+  },
+  ANDHRA_PRADESH: {
+    districts: [
+      { name: 'Srikakulam Coastal Zone', score: 75, level: 'Elevated', color: 'var(--status-warning)' },
+      { name: 'Visakhapatnam Harbor Belt', score: 68, level: 'Watch', color: 'var(--brand-orange)' },
+      { name: 'Kakinada Estuary Delta', score: 64, level: 'Watch', color: 'var(--brand-green)' },
+      { name: 'Machilipatnam Lowlands', score: 52, level: 'Standby', color: 'var(--brand-green)' }
+    ],
+    chokePoint: 'Trailing high swell surges impacting Srikakulam landing centers and Godavari river mouth outflow.'
+  },
+  TAMIL_NADU: {
+    districts: [
+      { name: 'Chennai Coastal Zone', score: 55, level: 'Watch', color: 'var(--brand-green)' },
+      { name: 'Nagapattinam Port Belt', score: 48, level: 'Standby', color: 'var(--brand-green)' },
+      { name: 'Cuddalore Coastal Reach', score: 44, level: 'Standby', color: 'var(--brand-green)' },
+      { name: 'Ramanathapuram / Palk Strait', score: 38, level: 'Standby', color: 'var(--brand-green)' }
+    ],
+    chokePoint: 'Deep sea fishing vessels recalled to harbour; Buckingham Canal drainage monitored for high spring tide backing.'
+  }
+};
 
 const createSvgIcon = (color: string, label: string) => {
   return L.divIcon({
@@ -57,10 +108,13 @@ const shelterSafeIcon = createSvgIcon('#00836c', '🏕️');
 const shelterCutoffIcon = createSvgIcon('#d03b3b', '🏕️');
 const cycloneEyeIcon = createSvgIcon('#d03b3b', '🌀');
 
-export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeStepChange }: OperationsCockpitProps) {
+export function OperationsCockpit({ selectedLanguage, selectedState = 'ALL', currentTimeStep, onTimeStepChange }: OperationsCockpitProps) {
   const [selectedRole, setSelectedRole] = useState<'NDRF' | 'COLLECTOR' | 'PUBLIC'>('NDRF');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activeStormId, setActiveStormId] = useState<'dana' | 'amphan' | 'fani'>('dana');
+  
+  const currentState = COASTAL_STATES.find(s => s.id === selectedState) || COASTAL_STATES[0];
+  const stateData = STATE_DISTRICT_DATA[selectedState] || STATE_DISTRICT_DATA['ALL'];
   
   // Basemap Selector: Default is Topo / Streets View
   const defaultBasemap = (import.meta.env.VITE_DEFAULT_BASEMAP as BasemapStyle) || 'streets';
@@ -209,17 +263,17 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
 
         {/* Coastal District Risk Rankings */}
         <div className="card" style={{ padding: '16px', flex: 1 }}>
-          <div style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--brand-orange-strong)', marginBottom: '12px' }}>
-            District Vulnerability Index
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--brand-orange-strong)' }}>
+              District Vulnerability Index
+            </span>
+            <span style={{ fontSize: '0.62rem', fontWeight: 700, padding: '2px 6px', borderRadius: 6, background: 'var(--brand-green-soft)', color: 'var(--brand-green-strong)' }}>
+              {currentState.shortName}
+            </span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              { name: 'Bhadrak District', score: 94, level: 'Catastrophic', color: 'var(--status-critical)' },
-              { name: 'Kendrapara Lowlands', score: 89, level: 'Critical', color: 'var(--status-critical)' },
-              { name: 'Jagatsinghpur Estuary', score: 82, level: 'Severe', color: 'var(--brand-orange)' },
-              { name: 'Balasore Coastal Belt', score: 76, level: 'Elevated', color: 'var(--status-warning)' }
-            ].map(dist => (
+            {stateData.districts.map(dist => (
               <div key={dist.name}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '4px' }}>
                   <span style={{ fontWeight: 600 }}>{dist.name}</span>
@@ -233,7 +287,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           </div>
 
           <div style={{ marginTop: '16px', padding: '10px', borderRadius: 10, background: 'var(--surface-2)', border: '1px solid var(--hairline)', fontSize: '0.7rem', color: 'var(--ink-secondary)' }}>
-            <strong>Choke Point Alert:</strong> Dhamra & Baitarani river backflow coincides with 3.1m high surge, blocking seaward drainage.
+            <strong>Choke Point Alert:</strong> {stateData.chokePoint}
           </div>
         </div>
 
@@ -289,12 +343,12 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
           </div>
         </div>
 
-        {/* Leaflet Map Canvas - Explicit 540px height & centered on coastal Odisha */}
+        {/* Leaflet Map Canvas - Dynamic center and zoom matching selected State Jurisdiction */}
         <div style={{ width: '100%', height: '540px', minHeight: '540px', position: 'relative' }}>
           <MapContainer 
-            key={basemap}
-            center={[20.72, 86.92]} 
-            zoom={8} 
+            key={`${basemap}-${currentState.id}`}
+            center={currentState.center} 
+            zoom={currentState.zoom} 
             scrollWheelZoom={true} 
             style={{ height: '540px', width: '100%' }}
           >
@@ -318,7 +372,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
             {/* Inundation Zones */}
             <Polygon positions={zoneDeep} pathOptions={{ color: '#d03b3b', fillColor: '#d03b3b', fillOpacity: 0.45, weight: 1.5 }}>
               <Popup>
-                <strong>Bhitarkanika - Dhamra Fringe</strong><br />
+                <strong>Bhitarkanika - Dhamra Fringe (Odisha)</strong><br />
                 Surge Depth: <strong>2.5m - 3.5m</strong><br />
                 Status: Earthen Embankments Overtopped
               </Popup>
@@ -326,7 +380,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
 
             <Polygon positions={zoneMid} pathOptions={{ color: '#f58220', fillColor: '#f58220', fillOpacity: 0.35, weight: 1.5 }}>
               <Popup>
-                <strong>Kendrapara Lowland Estuary</strong><br />
+                <strong>Kendrapara Lowland Estuary (Odisha)</strong><br />
                 Surge Depth: <strong>1.5m - 2.5m</strong><br />
                 Status: Severe River Backflow Threat
               </Popup>
@@ -334,7 +388,7 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
 
             <Polygon positions={zoneLow} pathOptions={{ color: '#00836c', fillColor: '#00836c', fillOpacity: 0.25, weight: 1.5 }}>
               <Popup>
-                <strong>Bhadrak Agricultural Delta</strong><br />
+                <strong>Bhadrak Agricultural Delta (Odisha)</strong><br />
                 Surge Depth: <strong>0.5m - 1.5m</strong><br />
                 Status: Saline Paddy Inundation
               </Popup>
@@ -362,45 +416,144 @@ export function OperationsCockpit({ selectedLanguage, currentTimeStep, onTimeSte
               </Popup>
             </Marker>
 
-            {/* Infrastructure Markers */}
-            <Marker position={[20.82, 86.91]} icon={hospitalRiskIcon}>
-              <Popup>
-                <strong>Dhamra Port CHC</strong><br />
-                Elevation: 2.1m | Surge: <strong>1.4m</strong><br />
-                <span style={{ color: '#d03b3b', fontWeight: 700 }}>Power Cutoff Imminent</span>
-              </Popup>
-            </Marker>
+            {/* Odisha Infrastructure Markers */}
+            {(selectedState === 'ALL' || selectedState === 'ODISHA') && (
+              <>
+                <Marker position={[20.82, 86.91]} icon={hospitalRiskIcon}>
+                  <Popup>
+                    <strong>Dhamra Port CHC (Odisha)</strong><br />
+                    Elevation: 2.1m | Surge: <strong>1.4m</strong><br />
+                    <span style={{ color: '#d03b3b', fontWeight: 700 }}>Power Cutoff Imminent</span>
+                  </Popup>
+                </Marker>
 
-            <Marker position={[21.05, 86.51]} icon={hospitalSafeIcon}>
-              <Popup>
-                <strong>Bhadrak District Hospital</strong><br />
-                Elevation: 8.4m | Surge: 0.0m<br />
-                <span style={{ color: '#0ca30c', fontWeight: 700 }}>Safe Regional Relief Hub</span>
-              </Popup>
-            </Marker>
+                <Marker position={[21.05, 86.51]} icon={hospitalSafeIcon}>
+                  <Popup>
+                    <strong>Bhadrak District Hospital (Odisha)</strong><br />
+                    Elevation: 8.4m | Surge: 0.0m<br />
+                    <span style={{ color: '#0ca30c', fontWeight: 700 }}>Safe Regional Relief Hub</span>
+                  </Popup>
+                </Marker>
 
-            <Marker position={[20.78, 86.74]} icon={substationFloodedIcon}>
-              <Popup>
-                <strong>OPTCL Chandbali Grid Substation</strong><br />
-                Elevation: 1.9m | Surge: 1.1m<br />
-                <span style={{ color: '#f58220', fontWeight: 700 }}>Tripped - 45k Consumers Cut</span>
-              </Popup>
-            </Marker>
+                <Marker position={[20.78, 86.74]} icon={substationFloodedIcon}>
+                  <Popup>
+                    <strong>OPTCL Chandbali Grid Substation (Odisha)</strong><br />
+                    Elevation: 1.9m | Surge: 1.1m<br />
+                    <span style={{ color: '#f58220', fontWeight: 700 }}>Tripped - 45k Consumers Cut</span>
+                  </Popup>
+                </Marker>
 
-            <Marker position={[20.68, 86.77]} icon={shelterSafeIcon}>
-              <Popup>
-                <strong>Rajkanika Multi-Purpose Shelter</strong><br />
-                Elevation: 4.5m | Occupancy: 850 / 1200
-              </Popup>
-            </Marker>
+                <Marker position={[20.68, 86.77]} icon={shelterSafeIcon}>
+                  <Popup>
+                    <strong>Rajkanika Multi-Purpose Shelter (Odisha)</strong><br />
+                    Elevation: 4.5m | Occupancy: 850 / 1200
+                  </Popup>
+                </Marker>
 
-            <Marker position={[20.73, 87.03]} icon={shelterCutoffIcon}>
-              <Popup>
-                <strong>Talchua Hamlet Shelter</strong><br />
-                <span style={{ color: '#d03b3b', fontWeight: 700 }}>Road Link Severed</span><br />
-                Inflatable assault boats needed
-              </Popup>
-            </Marker>
+                <Marker position={[20.73, 87.03]} icon={shelterCutoffIcon}>
+                  <Popup>
+                    <strong>Talchua Hamlet Shelter (Odisha)</strong><br />
+                    <span style={{ color: '#d03b3b', fontWeight: 700 }}>Road Link Severed</span><br />
+                    Inflatable assault boats needed
+                  </Popup>
+                </Marker>
+              </>
+            )}
+
+            {/* West Bengal Infrastructure Markers */}
+            {(selectedState === 'ALL' || selectedState === 'WEST_BENGAL') && (
+              <>
+                <Marker position={[21.65, 88.08]} icon={hospitalRiskIcon}>
+                  <Popup>
+                    <strong>Sagar Island CHC (West Bengal)</strong><br />
+                    Elevation: 1.8m | Surge: <strong>1.8m</strong><br />
+                    <span style={{ color: '#d03b3b', fontWeight: 700 }}>Peripheral Inundation Watch</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[21.87, 88.18]} icon={hospitalSafeIcon}>
+                  <Popup>
+                    <strong>Kakdwip Sub-Divisional Hospital (WB)</strong><br />
+                    Elevation: 6.2m | Surge: 0.0m<br />
+                    <span style={{ color: '#0ca30c', fontWeight: 700 }}>Safe Delta Relief Center</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[21.63, 87.52]} icon={substationFloodedIcon}>
+                  <Popup>
+                    <strong>WBSEDCL Digha Coastal Substation (WB)</strong><br />
+                    Elevation: 2.2m | Surge: 0.9m<br />
+                    <span style={{ color: '#f58220', fontWeight: 700 }}>Precautionary Feeder Shutdown</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[21.58, 88.25]} icon={shelterCutoffIcon}>
+                  <Popup>
+                    <strong>Frasergunj Cyclone Relief Shelter (WB)</strong><br />
+                    <span style={{ color: '#d03b3b', fontWeight: 700 }}>Earthen Embankment Breached</span><br />
+                    NDRF boat evacuation dispatched
+                  </Popup>
+                </Marker>
+              </>
+            )}
+
+            {/* Andhra Pradesh Infrastructure Markers */}
+            {(selectedState === 'ALL' || selectedState === 'ANDHRA_PRADESH') && (
+              <>
+                <Marker position={[17.70, 83.30]} icon={hospitalSafeIcon}>
+                  <Popup>
+                    <strong>Visakhapatnam King George Hospital (AP)</strong><br />
+                    Elevation: 12.0m | Surge: 0.0m<br />
+                    <span style={{ color: '#0ca30c', fontWeight: 700 }}>Apex Trauma & Relief Hub</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[16.98, 82.28]} icon={hospitalRiskIcon}>
+                  <Popup>
+                    <strong>Kakinada Port Health Center (AP)</strong><br />
+                    Elevation: 2.4m | Swell Surge: <strong>1.2m</strong><br />
+                    <span style={{ color: '#f58220', fontWeight: 700 }}>Port Operations Halted</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[18.29, 83.89]} icon={substationFloodedIcon}>
+                  <Popup>
+                    <strong>APTransco Srikakulam Coastal Grid (AP)</strong><br />
+                    Elevation: 3.1m | High Swell Alert<br />
+                    <span style={{ color: '#00836c', fontWeight: 700 }}>Grid Operating Normally</span>
+                  </Popup>
+                </Marker>
+              </>
+            )}
+
+            {/* Tamil Nadu Infrastructure Markers */}
+            {(selectedState === 'ALL' || selectedState === 'TAMIL_NADU') && (
+              <>
+                <Marker position={[13.08, 80.28]} icon={hospitalSafeIcon}>
+                  <Popup>
+                    <strong>Rajiv Gandhi Govt General Hospital (TN)</strong><br />
+                    Elevation: 7.5m | Status: Safe<br />
+                    <span style={{ color: '#0ca30c', fontWeight: 700 }}>Regional Command Safe</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[10.76, 79.84]} icon={hospitalSafeIcon}>
+                  <Popup>
+                    <strong>Nagapattinam District Hospital (TN)</strong><br />
+                    Elevation: 4.8m | Status: Standby<br />
+                    <span style={{ color: '#0ca30c', fontWeight: 700 }}>Fishermen Advisory Broadcast</span>
+                  </Popup>
+                </Marker>
+
+                <Marker position={[11.75, 79.77]} icon={substationFloodedIcon}>
+                  <Popup>
+                    <strong>TANGEDCO Cuddalore Coastal Feeder (TN)</strong><br />
+                    Elevation: 3.5m | Status: Normal<br />
+                    <span style={{ color: '#00836c', fontWeight: 700 }}>Standby for High Spring Tide</span>
+                  </Popup>
+                </Marker>
+              </>
+            )}
           </MapContainer>
         </div>
 

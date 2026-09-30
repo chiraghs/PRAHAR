@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { KPICards } from './components/KPICards';
+import { StateFilterBar } from './components/StateFilterBar';
 import { OperationsCockpit } from './components/OperationsCockpit';
 import { InfrastructureMatrix } from './components/InfrastructureMatrix';
 import { ParametricEscrow } from './components/ParametricEscrow';
@@ -11,6 +12,7 @@ import { Compass, Building2, Coins, Server, Smartphone } from 'lucide-react';
 export default function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [language, setLanguage] = useState<string>('en');
+  const [selectedState, setSelectedState] = useState<string>('ALL');
   const [activeTab, setActiveTab] = useState<'cockpit' | 'mobile' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
   const [currentTimeStep, setCurrentTimeStep] = useState<string>('T-24h');
 
@@ -42,8 +44,14 @@ export default function App() {
       {/* Main App Container */}
       <main style={{ maxWidth: '1440px', width: '100%', margin: '0 auto', padding: '18px 24px 32px 24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         
+        {/* State-Level Operational Filter Bar for Ops */}
+        <StateFilterBar 
+          selectedState={selectedState}
+          onSelectState={setSelectedState}
+        />
+
         {/* Top Executive KPI Cards */}
-        <KPICards language={language} />
+        <KPICards language={language} selectedState={selectedState} />
 
         {/* View Navigation Tabs */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
@@ -95,6 +103,7 @@ export default function App() {
           {activeTab === 'cockpit' && (
             <OperationsCockpit 
               selectedLanguage={language}
+              selectedState={selectedState}
               currentTimeStep={currentTimeStep}
               onTimeStepChange={setCurrentTimeStep}
             />
