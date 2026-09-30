@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  ingestion:
+    build:
+      context: ./services/ingestion
+    ports:
+      - "8001:8001"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - INGESTION_SERVICE_URL=http://ingestion:8001
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - ingestion
