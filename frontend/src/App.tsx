@@ -10,10 +10,22 @@ import { PhoneSimulator } from './components/PhoneSimulator';
 import { Compass, Building2, Coins, Server, Smartphone } from 'lucide-react';
 
 export default function App() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [language, setLanguage] = useState<string>('en');
-  const [selectedState, setSelectedState] = useState<string>('ALL');
-  const [activeTab, setActiveTab] = useState<'cockpit' | 'mobile' | 'infrastructure' | 'parametric' | 'architecture'>('cockpit');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('theme') as 'light' | 'dark') || 'light';
+  });
+  const [language, setLanguage] = useState<string>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('lang') || 'en';
+  });
+  const [selectedState, setSelectedState] = useState<string>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('state') || 'ALL';
+  });
+  const [activeTab, setActiveTab] = useState<'cockpit' | 'mobile' | 'infrastructure' | 'parametric' | 'architecture'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('tab') as any) || 'cockpit';
+  });
   const [currentTimeStep, setCurrentTimeStep] = useState<string>('T-24h');
 
   // Sync theme with DOM

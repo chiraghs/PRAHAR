@@ -1,0 +1,686 @@
+import os
+import subprocess
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRAHAR - Pitch Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&family=Lora:ital,wght@0,500;0,600;1,400&display=swap');
+
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0f172a;
+    background: #0a192f;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative;
+    overflow: hidden;
+    padding: 70px 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Theme variations */
+  .slide.dark {
+    background: radial-gradient(circle at 50% 20%, #0d2238 0%, #071523 100%);
+    color: #ffffff;
+  }
+
+  .slide.light {
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  /* Headers */
+  .slide-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 35px;
+  }
+
+  .accent-bar {
+    width: 8px;
+    height: 48px;
+    background: #00836c;
+    border-radius: 4px;
+  }
+
+  .slide-title {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+  }
+
+  .slide.dark .slide-title {
+    color: #ffffff;
+  }
+
+  .slide-category {
+    font-size: 15px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #00836c;
+    margin-bottom: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  }
+
+  .slide.dark .card {
+    background: rgba(15, 33, 60, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Pills */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* Screenshot wrapper */
+  .screenshot-frame {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+  }
+
+  .screenshot-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Grid helpers */
+  .grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- ==========================================
+       SLIDE 1: COVER HERO (DARK)
+  =========================================== -->
+  <div class="slide dark" style="justify-content: center; align-items: center; text-align: center; padding: 0 120px;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 30%, rgba(0, 131, 108, 0.15) 0%, transparent 70%); pointer-events: none;"></div>
+    
+    <div style="z-index: 10;">
+      <div class="pill" style="background: rgba(0, 131, 108, 0.18); border: 1.5px solid #00836c; color: #00d1b2; margin-bottom: 24px;">
+        <span>⚡ AI-POWERED CYCLONE RESILIENCE PLATFORM</span>
+      </div>
+
+      <h1 style="font-size: 110px; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 12px; color: #ffffff;">
+        PRAHAR
+      </h1>
+
+      <p style="font-size: 32px; font-weight: 700; color: #94a3b8; margin-bottom: 14px;">
+        Predictive Risk & Anticipatory Hazard Action Resource
+      </p>
+
+      <p style="font-size: 20px; color: #64748b; max-width: 1050px; margin: 0 auto 45px auto; line-height: 1.5;">
+        Track-Based Cyclone Impact & Infrastructure Vulnerability Forecaster for Bay of Bengal & Coastal APAC
+      </p>
+
+      <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 60px;">
+        <span class="pill" style="background: rgba(30, 58, 95, 0.8); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.2);">🌐 Google Earth Engine 30m</span>
+        <span class="pill" style="background: rgba(76, 29, 149, 0.8); color: #c4b5fd; border: 1px solid rgba(196, 181, 253, 0.2);">⚡ Gemini 1.5 Flash Multimodal</span>
+        <span class="pill" style="background: rgba(12, 74, 96, 0.8); color: #67e8f9; border: 1px solid rgba(103, 232, 249, 0.2);">🛰️ Hydrodynamic Bathymetry</span>
+        <span class="pill" style="background: rgba(20, 83, 45, 0.8); color: #86efac; border: 1px solid rgba(134, 239, 172, 0.2);">🇮🇳 22 Indic Languages Audio</span>
+      </div>
+
+      <p style="font-size: 17px; font-style: italic; color: #94a3b8; max-width: 980px; margin: 0 auto;">
+        Designed for District Magistrates, NDRF Commanders & State Disaster Authorities (OSDMA, WBDMD, APSDMA, TNDMA) to trigger anticipatory evacuations &lt; T-12h before landfall.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 2: CORE OBJECTIVES (LIGHT)
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar"></div>
+        <div>
+          <div class="slide-category">System Architecture</div>
+          <h2 class="slide-title">Core Objectives</h2>
+        </div>
+      </div>
+
+      <div class="grid-5" style="margin-bottom: 30px;">
+        <div class="card" style="padding: 30px 24px; position: relative;">
+          <div style="width: 48px; height: 6px; background: #00836c; border-radius: 3px; margin-bottom: 24px;"></div>
+          <div style="font-size: 20px; font-weight: 800; margin-bottom: 14px; color: #0f172a;">1. Ingest Track Telemetry</div>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Real-time ingestion of IMD bulletins, JTWC advisories, tide gauges, and Copernicus 30m GEE DEM elevation models.</p>
+        </div>
+
+        <div class="card" style="padding: 30px 24px; position: relative;">
+          <div style="width: 48px; height: 6px; background: #f58220; border-radius: 3px; margin-bottom: 24px;"></div>
+          <div style="font-size: 20px; font-weight: 800; margin-bottom: 14px; color: #0f172a;">2. Surge Modeling</div>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Hydrodynamic coastal inundation envelopes across 3 surge hazard tiers (&gt;2.5m, 1.5-2.5m, 0.5-1.5m).</p>
+        </div>
+
+        <div class="card" style="padding: 30px 24px; position: relative;">
+          <div style="width: 48px; height: 6px; background: #d03b3b; border-radius: 3px; margin-bottom: 24px;"></div>
+          <div style="font-size: 20px; font-weight: 800; margin-bottom: 14px; color: #0f172a;">3. Infrastructure Graph</div>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Pinpoint severed CHCs, tripped substations, inundated roads, and cutoff cyclone shelters before surge strikes.</p>
+        </div>
+
+        <div class="card" style="padding: 30px 24px; position: relative;">
+          <div style="width: 48px; height: 6px; background: #00836c; border-radius: 3px; margin-bottom: 24px;"></div>
+          <div style="font-size: 20px; font-weight: 800; margin-bottom: 14px; color: #0f172a;">4. Multimodal SOPs</div>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Gemini 1.5 Flash auto-drafts actionable tactical directives for NDRF, DMs, and Panchayats in 22 Indic tongues.</p>
+        </div>
+
+        <div class="card" style="padding: 30px 24px; position: relative;">
+          <div style="width: 48px; height: 6px; background: #f58220; border-radius: 3px; margin-bottom: 24px;"></div>
+          <div style="font-size: 20px; font-weight: 800; margin-bottom: 14px; color: #0f172a;">5. Parametric Escrow</div>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Automated pre-landfall liquidity escrow releasing emergency disaster cash at T-24h with zero claims latency.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission banner -->
+    <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 24px 36px; display: flex; align-items: center; gap: 20px;">
+      <div style="font-size: 28px;">🎯</div>
+      <div style="font-size: 17px; font-weight: 700; color: #00836c; line-height: 1.5;">
+        Our Mission: Empower State & District Disaster Authorities with track-based predictive intelligence, multimodal AI, and transparent parametric liquidity — turning raw forecast data into life-saving anticipatory action.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 3: THE VULNERABILITY GAP (PROBLEM)
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar" style="background: #d03b3b;"></div>
+        <div>
+          <div class="slide-category" style="color: #d03b3b;">Problem Statement</div>
+          <h2 class="slide-title">The Coastal Vulnerability Gap</h2>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: The Problem Today -->
+        <div class="card" style="padding: 45px 40px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
+            <span style="font-size: 22px;">🔴</span>
+            <span style="font-size: 22px; font-weight: 800; color: #d03b3b;">The Problem Today</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 26px;">
+            <div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">▲ Fragmented Telemetry Silos</div>
+              <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Cyclone tracks from IMD, bathymetry from INCOIS, power grids, and hospital directories exist in isolated databases without unified spatial correlation.</p>
+            </div>
+
+            <div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">▲ 12-24h Bureaucratic Response Lag</div>
+              <p style="font-size: 15px; color: #64748b; line-height: 1.6;">Standard disaster dashboards update post-facto. Ground damage assessments occur 24-48 hours after coastal embankments are breached.</p>
+            </div>
+
+            <div>
+              <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">▲ Static Paper-Based Emergency SOPs</div>
+              <p style="font-size: 15px; color: #64748b; line-height: 1.6;">District Collectors rely on generic paper manuals unsuited for live dynamic water levels, leading to trapped civilians and flooded evacuation routes.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Quote box -->
+        <div class="card" style="padding: 50px 45px; background: #fff5f5; border: 1.5px solid #fed7d7; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+          <div style="font-size: 54px; margin-bottom: 20px;">⚠️</div>
+          <blockquote style="font-size: 32px; font-family: 'Lora', serif; font-weight: 600; color: #9b2c2c; line-height: 1.4; margin-bottom: 30px;">
+            "The storm surge inundated the coastal arterial highway before the evacuation buses were dispatched."
+          </blockquote>
+          <p style="font-size: 16px; color: #742a2a; line-height: 1.7; max-width: 650px; margin: 0 auto;">
+            Without predictive, track-based infrastructure vulnerability modeling, relief forces deploy blindly after lifelines sever. Coastal districts lose critical power and emergency medical access within hours.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 14px; color: #94a3b8; text-align: center;">
+      Source: CAG Disaster Management Review & NDMA Coastal Cyclone Impact Audits (2019-2024)
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 4: THE PRAHAR SOLUTION
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar"></div>
+        <div>
+          <div class="slide-category">System Architecture</div>
+          <h2 class="slide-title">The PRAHAR Solution</h2>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 35px;">
+        <div class="card" style="padding: 40px 32px;">
+          <div style="width: 50px; height: 6px; background: #00836c; border-radius: 3px; margin-bottom: 24px;"></div>
+          <h3 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">1. Unified Geoprobe</h3>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.7;">Direct ingestion of live IMD track coordinates, JTWC advisories, Copernicus 30m DEM elevation, and OpenStreetMap infrastructure networks into a unified spatial graph.</p>
+        </div>
+
+        <div class="card" style="padding: 40px 32px;">
+          <div style="width: 50px; height: 6px; background: #f58220; border-radius: 3px; margin-bottom: 24px;"></div>
+          <h3 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">2. Multimodal AI Triage</h3>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.7;">Gemini 1.5 Flash evaluates hydrological choke points, drafting role-directed SOPs and generating multi-lingual Web Speech broadcasts across 22 official Indian languages.</p>
+        </div>
+
+        <div class="card" style="padding: 40px 32px;">
+          <div style="width: 50px; height: 6px; background: #00836c; border-radius: 3px; margin-bottom: 24px;"></div>
+          <h3 style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 14px;">3. Parametric Liquidity</h3>
+          <p style="font-size: 15px; color: #64748b; line-height: 1.7;">Automated pre-landfall escrow releases emergency cash reserves at T-24h directly to SDRF accounts without bureaucratic verification delays or post-facto claims.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Minute DM Value -->
+    <div style="background: rgba(0, 131, 108, 0.08); border: 1.5px solid rgba(0, 131, 108, 0.25); border-radius: 20px; padding: 26px 36px; display: flex; align-items: center; gap: 20px;">
+      <div style="font-size: 32px;">💡</div>
+      <div style="font-size: 17px; font-weight: 700; color: #00836c; line-height: 1.5;">
+        The 5-Minute District Collector Value: You don't have to decipher raw radar files. PRAHAR instantly highlights which bridge is severed, which hospital loses backup power, and where amphibious assault craft must be pre-staged.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 5: LIVE OPERATIONS COCKPIT
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar"></div>
+        <div>
+          <div class="slide-category">Interactive Showcase</div>
+          <h2 class="slide-title">Live Operations Cockpit</h2>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1200px 1fr; gap: 35px; align-items: stretch;">
+        <!-- Left: Crisp Screenshot -->
+        <div class="screenshot-frame" style="height: 680px;">
+          <img src="screenshots/cockpit_light.png" alt="Operations Cockpit Light Mode">
+        </div>
+
+        <!-- Right: Highlights -->
+        <div class="card" style="padding: 35px 28px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="font-size: 22px; font-weight: 800; color: #00836c; margin-bottom: 20px;">Real-Time Capabilities</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">• Dynamic Storm Tracking</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Live trajectory of Cyclone DANA (125 km/h) with 6-stage temporal scrubber from T-72h to Landfall.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">• 3-Tier Surge Envelopes</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Catastrophic (&gt;2.5m red), Severe (1.5-2.5m orange), and Saline (0.5-1.5m green) inundation polygons.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">• District Vulnerability Index</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Ranks Bhadrak (94%), Kendrapara (89%), and South 24 Parganas with hydrological choke point alerts.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">• Multimodal SOP Directives</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Role-based tactical instructions for NDRF, District Collectors, and Panchayats.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+            Integrated with Leaflet GIS & OpenStreetMap Topo View
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #94a3b8;">
+      PRAHAR Operations Cockpit • Running on localhost:5174
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 6: MULTI-STATE OPS & 22 INDIC LANGUAGES
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar" style="background: #f58220;"></div>
+        <div>
+          <div class="slide-category" style="color: #f58220;">Operations & Inclusivity</div>
+          <h2 class="slide-title">State Operations & 22 Official Indic Languages</h2>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 25px;">
+        <div class="screenshot-frame" style="height: 480px;">
+          <img src="screenshots/odisha_landfall.png" alt="Odisha Landfall Sector">
+        </div>
+        <div class="screenshot-frame" style="height: 480px;">
+          <img src="screenshots/cockpit_dark.png" alt="Dark War Room Mode">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="padding: 24px 30px;">
+          <div style="font-size: 18px; font-weight: 800; color: #00836c; margin-bottom: 8px;">🏛️ Multi-State Operational Jurisdictions</div>
+          <p style="font-size: 14px; color: #64748b; line-height: 1.6;">
+            1-click filtering across National (NDMA), Odisha (OSDMA), West Bengal (WBDMD), Andhra Pradesh (APSDMA), and Tamil Nadu (TNDMA) automatically re-centers GIS and updates state-specific choke points and asset markers.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 24px 30px;">
+          <div style="font-size: 18px; font-weight: 800; color: #f58220; margin-bottom: 8px;">🎙️ All 22 Eighth Schedule Indian Languages</div>
+          <p style="font-size: 14px; color: #64748b; line-height: 1.6;">
+            Native translations and instant Web Speech audio broadcasts for Odia, Bengali, Telugu, Tamil, Hindi, Marathi, Gujarati, etc. Dark Mode supports 24/7 command center screening without visual fatigue.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #94a3b8;">
+      Accessible in Light & Dark Themes • Searchable 22 Indic Languages Modal
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 7: MOBILE CITIZEN RESILIENCE SIMULATOR
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar"></div>
+        <div>
+          <div class="slide-category">Citizen Last-Mile</div>
+          <h2 class="slide-title">Mobile Citizen Simulator (PWA)</h2>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1000px 1fr; gap: 35px; align-items: stretch;">
+        <!-- Left: Phone Simulator Screenshot -->
+        <div class="screenshot-frame" style="height: 680px; display: flex; justify-content: center; align-items: center; background: #f1f5f9;">
+          <img src="screenshots/mobile_simulator.png" alt="Mobile Simulator PWA" style="height: 100%; width: auto; object-fit: contain;">
+        </div>
+
+        <!-- Right: Mobile Features -->
+        <div class="card" style="padding: 40px 32px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="font-size: 24px; font-weight: 800; color: #00836c; margin-bottom: 24px;">📱 Citizen Protection Features</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div>
+                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">✓ Offline-First PWA Architecture</div>
+                <p style="font-size: 14px; color: #64748b; line-height: 1.6;">Pre-caches elevation maps and shelter waypoints. Fully functional even when mobile towers lose power or backhaul connections.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">✓ Dynamic Shelter Navigation</div>
+                <p style="font-size: 14px; color: #64748b; line-height: 1.6;">Real-time routing diverts citizens away from flooded roads toward elevated shelters with verified remaining capacity.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">✓ One-Tap SOS Distress Beacon</div>
+                <p style="font-size: 14px; color: #64748b; line-height: 1.6;">Broadcasts GPS coordinates, battery level, and family count to district emergency operations centers.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">✓ Parametric Relief QR Pass</div>
+                <p style="font-size: 14px; color: #64748b; line-height: 1.6;">Digital QR credentials enable immediate ration and relief fund verification at local evacuation shelters.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+            Simulated on iPhone 16 Chassis with Dynamic Island Telemetry
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #94a3b8;">
+      Available on Port 5174 (?tab=mobile)
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 8: INFRASTRUCTURE VULNERABILITY MATRIX
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar" style="background: #d03b3b;"></div>
+        <div>
+          <div class="slide-category" style="color: #d03b3b;">Exposure Assessment</div>
+          <h2 class="slide-title">Infrastructure Vulnerability Matrix</h2>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1150px 1fr; gap: 35px; align-items: stretch;">
+        <div class="screenshot-frame" style="height: 680px;">
+          <img src="screenshots/infrastructure_matrix.png" alt="Infrastructure Matrix">
+        </div>
+
+        <div class="card" style="padding: 35px 28px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="font-size: 22px; font-weight: 800; color: #d03b3b; margin-bottom: 20px;">5 Critical Lifeline Sectors</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">🏥 Primary Health Centers (CHCs)</div>
+                <p style="font-size: 13px; color: #64748b; line-height: 1.5;">Elevation vs surge calculation flags oxygen manifold flooding and power cutoffs before breach.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">⚡ 33/11kV Substation Grids</div>
+                <p style="font-size: 13px; color: #64748b; line-height: 1.5;">Tripping predictions prevent equipment burnout and identify affected consumer counts.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">🏕️ Multi-Purpose Cyclone Shelters</div>
+                <p style="font-size: 13px; color: #64748b; line-height: 1.5;">Live capacity tracking and road severance warnings dispatch amphibious assault craft.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">🌉 Arterial Highways & Bridges</div>
+                <p style="font-size: 13px; color: #64748b; line-height: 1.5;">Identifies specific road cuts (e.g. SH-9A) causing ambulance reroutes of 4.2+ hours.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+            Physics-Based Inundation Thresholding (DEM vs Storm Surge)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #94a3b8;">
+      Tab 3: Infrastructure Matrix (?tab=infrastructure)
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 9: PARAMETRIC ESCROW & MATH FORMULA
+  =========================================== -->
+  <div class="slide light">
+    <div>
+      <div class="slide-header">
+        <div class="accent-bar"></div>
+        <div>
+          <div class="slide-category">Financial Resilience</div>
+          <h2 class="slide-title">Parametric Escrow & Predictive Mathematical Model</h2>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1000px 1fr; gap: 35px; align-items: stretch;">
+        <div class="screenshot-frame" style="height: 680px;">
+          <img src="screenshots/parametric_escrow.png" alt="Parametric Escrow Ledger">
+        </div>
+
+        <div class="card" style="padding: 35px 30px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="font-size: 22px; font-weight: 800; color: #00836c; margin-bottom: 18px;">Automated Vulnerability Index</h3>
+
+            <div style="background: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 14px; padding: 18px; margin-bottom: 24px; text-align: center;">
+              <code style="font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: #1e293b;">
+                V_dist = 0.45·(S_peak / E_mean) + 0.35·(C_sev / C_tot) + 0.20·ρ_kutcha
+              </code>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">● Zero Claims Processing</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Funds disburse automatically at T-24h once storm track and surge thresholds are confirmed by IMD feeds.</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">● Pre-Landfall Disaster Liquidity</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Allocates ₹21.00 Cr pool directly to impacted coastal state SDRF accounts (e.g. ₹10.5 Cr Odisha, ₹5.25 Cr WB).</p>
+              </div>
+
+              <div>
+                <div style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">● Cryptographic Auditability</div>
+                <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">Every payout is logged with verifiable SHA-256 block hashes preventing administrative diversion.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+            48h Pre-Landfall Liquidity Disbursed to State Accounts
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 13px; color: #94a3b8;">
+      Tab 4: Parametric Liquidity Escrow (?tab=parametric)
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SLIDE 10: ARCHITECTURE & DEPLOYMENT (DARK)
+  =========================================== -->
+  <div class="slide dark" style="padding: 50px 90px;">
+    <div>
+      <div class="slide-header" style="margin-bottom: 25px;">
+        <div class="accent-bar" style="background: #00d1b2;"></div>
+        <div>
+          <div class="slide-category" style="color: #00d1b2;">Readiness & Scalability</div>
+          <h2 class="slide-title">Enterprise System Architecture & Immediate Readiness</h2>
+        </div>
+      </div>
+
+      <!-- Screenshot of Architecture -->
+      <div class="screenshot-frame" style="height: 480px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.15);">
+        <img src="screenshots/architecture_pipeline.png" alt="Architecture & GEE Pipeline">
+      </div>
+    </div>
+
+    <!-- Bottom CTA Card -->
+    <div class="card" style="padding: 35px 50px; text-align: center; border: 1.5px solid #00836c; background: rgba(13, 34, 56, 0.95);">
+      <h2 style="font-size: 38px; font-weight: 900; color: #ffffff; margin-bottom: 10px;">
+        Anticipate. Protect. Empower Coastal Resilience.
+      </h2>
+      <p style="font-size: 20px; color: #94a3b8; margin-bottom: 20px;">
+        Deployable across National, State & District Disaster Authorities in under 48 hours with zero structural changes to legacy data.
+      </p>
+      <div style="display: flex; gap: 20px; justify-content: center; font-size: 15px; font-weight: 700; color: #00d1b2;">
+        <span>⚡ Ingestion Poller (Port 8001)</span>
+        <span>•</span>
+        <span>⚡ FastAPI Core Engine (Port 8010)</span>
+        <span>•</span>
+        <span>⚡ Vite GIS Command Center (Port 5174)</span>
+        <span>•</span>
+        <span>⚡ 100% Free Open Baseline</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+"""
+
+html_path = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/deck.html"
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"Wrote HTML deck to: {html_path}")
+
+pdf_path = "/Volumes/DiskD/HACKATHONS/Prahar/pitch-deck/PRAHAR-Pitch-Deck.pdf"
+chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+cmd = [
+    chrome_bin,
+    "--headless=new",
+    "--no-pdf-header-footer",
+    "--print-to-pdf=" + pdf_path,
+    html_path
+]
+
+print("Executing Chrome headless PDF generation...")
+res = subprocess.run(cmd, capture_output=True, text=True)
+print("Returncode:", res.returncode)
+if os.path.exists(pdf_path):
+    print(f"Successfully generated PDF: {pdf_path} (Size: {os.path.getsize(pdf_path)} bytes)")
+else:
+    print("PDF generation failed:", res.stderr)
